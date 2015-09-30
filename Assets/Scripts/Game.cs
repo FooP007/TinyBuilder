@@ -3,16 +3,21 @@ using System.Collections;
 
 public class Game : MonoBehaviour 
 {
-	public GameObject carpool;
+	// Village
+	private GameObject carpool;
 
 	private Carpool carpoolScript;
 	private int carpoolLevel = 0;
 
 	private bool spaceKeyDown = false;
 
+	// 
+	private int day = 0;
+
 	// Use this for initialization
 	void Start () 
 	{
+		carpool = GameObject.FindGameObjectWithTag("CarpoolPlaceholder");
 		carpoolScript = carpool.GetComponent<Carpool>();
 
 		buildTown();
@@ -25,8 +30,10 @@ public class Game : MonoBehaviour
 		{
 
 			spaceKeyDown = true;
+
 			carpoolLevel++;
-			carpoolScript.FillSpriteRenderer(carpoolLevel);
+			Debug.Log ("carpool capacity: " + carpoolScript.Capacity());
+			carpoolScript.FillSpriteRenderer();
 		}
 
 		if(Input.GetKeyUp("space")  )
@@ -38,7 +45,7 @@ public class Game : MonoBehaviour
 	void buildTown()
 	{
 
-		carpoolScript.FillSpriteRenderer(carpoolLevel);
+		carpoolScript.FillSpriteRenderer();
 
 	}
 }
