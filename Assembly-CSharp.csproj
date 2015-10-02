@@ -47,9 +47,10 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Game.cs" />
+     <Compile Include="Assets\Scripts\Overseer.cs" />
      <Compile Include="Assets\Scripts\Projects\Carpool.cs" />
-     <Compile Include="Assets\Scripts\Projects\Overseer.cs" />
      <Compile Include="Assets\Scripts\Projects\Project.cs" />
+     <Compile Include="Assets\Scripts\Projects\Street.cs" />
      <Compile Include="Assets\Scripts\SetSortingLayer.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

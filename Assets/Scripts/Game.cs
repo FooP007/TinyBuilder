@@ -1,26 +1,56 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Game : MonoBehaviour 
 {
+	public static Overseer overseer;
+
 	// Village
 	private GameObject carpool;
+	private GameObject street;
 
 	private Carpool carpoolScript;
-	private int carpoolLevel = 0;
+	private Street streetScript;
+
+	private List<Project> projects = new List<Project>();
 
 	private bool spaceKeyDown = false;
 
 	// 
 	private int day = 0;
 
+
 	// Use this for initialization
 	void Start () 
 	{
+		overseer = Overseer.Instance;
+
+		overseer.coins = 1800;
+
+		// find all projects
+		street = GameObject.FindGameObjectWithTag("StreetPlaceholder");
+		streetScript = street.GetComponent<Street>();
+
 		carpool = GameObject.FindGameObjectWithTag("CarpoolPlaceholder");
 		carpoolScript = carpool.GetComponent<Carpool>();
+		carpoolScript.getAppendend(streetScript);
+
+
+		// fill list
+		projects.Add(carpoolScript);
+		projects.Add(streetScript);
 
 		buildTown();
+	}
+
+	void nextDay()
+	{
+		day++;
+		foreach (Project p in projects)
+		{
+			p.Construct();
+		}
+
 	}
 	
 	// Update is called once per frame
@@ -31,12 +61,11 @@ public class Game : MonoBehaviour
 
 			spaceKeyDown = true;
 
-			carpoolLevel++;
-			Debug.Log ("carpool capacity: " + carpoolScript.Capacity());
-			carpoolScript.FillSpriteRenderer();
+			nextDay();
+
 		}
 
-		if(Input.GetKeyUp("space")  )
+		if(Input.GetKeyUp("space"))
 		{
 			spaceKeyDown = false;
 		}
@@ -44,8 +73,10 @@ public class Game : MonoBehaviour
 
 	void buildTown()
 	{
-
-		carpoolScript.FillSpriteRenderer();
+		foreach (Project p in projects)
+		{
+			p.FillSpriteRenderer();
+		}
 
 	}
 }

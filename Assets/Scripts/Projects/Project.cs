@@ -9,8 +9,7 @@ public class Project : MonoBehaviour
 	protected int[] costs;
 	protected int[] capacities;
 	protected int[] buildingRounds;
-	protected int _rounds;
-	protected int[] requiredPoints;
+	protected int[] requiredPoints = new int[1];
 	protected int[] requiredWhitehouse;
 
 	public int projectLevel = 0;
@@ -18,26 +17,18 @@ public class Project : MonoBehaviour
 
 	protected bool constructing = false;
 	protected int constructinDays = 0;
-
-
-	// Use this for initialization
-	void Start () 
-	{
-
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-		
-	}
+	protected int outOfRange = -1;
 
 	protected void StartConstructing()
 	{
-		constructing = true;
-
 		constructinDays = Rounds();
-		clockText.text = constructinDays.ToString();
+
+		if(constructinDays >= 0)
+		{
+			constructing = true;
+			clockText.text = constructinDays.ToString();
+		}
+
 	}
 
 	public void Construct()
@@ -49,9 +40,38 @@ public class Project : MonoBehaviour
 			if(constructinDays == 0)
 			{
 				projectLevel++;
+				FillSpriteRenderer();
 				constructinDays = 0;
 				constructing = false;
 			}
+		}
+	}
+
+	public virtual bool MetRequirements()
+	{
+		if(Points() >= Game.overseer.points)
+		{
+			return true;
+		}
+		else
+		{
+			Debug.Log ("Not enough points! Your points: " + Game.overseer.points +". Points needed: " + Points());
+			return false;
+		}
+	}
+
+	protected void OnMouseDown()
+	{
+		if(Rounds() != outOfRange)
+		{
+			if(Game.overseer.CanBuyProject(this, constructing))
+			{
+				StartConstructing();
+			}
+		}
+		else
+		{
+			Debug.Log ("Project is at maximum upgrade!");
 		}
 	}
 
@@ -61,6 +81,15 @@ public class Project : MonoBehaviour
 	public int Capacity()
 	{
 		return ArrayValue(capacities);
+	}
+
+	/**
+	 * returns the required Points the player needs to build 
+	 * this project or the upgrade of this project
+	 */
+	public int Points()
+	{
+		return ArrayValue(requiredPoints);
 	}
 
 	/**
@@ -88,10 +117,9 @@ public class Project : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log ("error "+ this.name + " index is out of range");
-			return 0;
+			Debug.Log ("Error! Index is out of range. Array: " + array.ToString());
+			return outOfRange;
 		}
-
 	}
 
 	/**
@@ -105,8 +133,7 @@ public class Project : MonoBehaviour
 
 		if(projectLevel > 0 && projectLevel <= sprites.Length)
 		{
-			appearence.sprite = sprites[projectLevel-1];
-			Debug.Log (sprites[projectLevel-1]);
+			appearence.sprite = sprites[projectLevel - 1];
 		}
 		else
 		{
