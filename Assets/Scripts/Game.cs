@@ -4,20 +4,23 @@ using System.Collections.Generic;
 public class Game : MonoBehaviour 
 {
 	public static Overseer overseer;
+	public int startDay = 0;
 
 	// Village
 	private GameObject carpool;
 	private GameObject street;
+	private GameObject whitehouse;
 
 	private Carpool carpoolScript;
 	private Street streetScript;
+	private Whitehouse whitehouseScript;
 
 	private List<Project> projects = new List<Project>();
 
 	private bool spaceKeyDown = false;
 
 	// 
-	private int day = 0;
+
 
 
 	// Use this for initialization
@@ -25,9 +28,23 @@ public class Game : MonoBehaviour
 	{
 		overseer = Overseer.Instance;
 
-		overseer.coins = 1800;
+		overseer.coins = 15;
+		overseer.points = 0;
+		overseer.citizen = 5;
+		overseer.capacity = 5;
+		overseer.environmentPoints = 0;
+		overseer.day = startDay;
 
-		// find all projects
+
+		GameObject[] transitionProjects = GameObject.FindGameObjectsWithTag("Project");
+
+		foreach (GameObject p  in transitionProjects)
+		{
+			Project script = p.GetComponent<Project>();
+			projects.Add(script);
+		}
+
+		/* find all projects
 		street = GameObject.FindGameObjectWithTag("StreetPlaceholder");
 		streetScript = street.GetComponent<Street>();
 
@@ -35,22 +52,25 @@ public class Game : MonoBehaviour
 		carpoolScript = carpool.GetComponent<Carpool>();
 		carpoolScript.getAppendend(streetScript);
 
+		whitehouse = GameObject.FindGameObjectWithTag("WhitehousePlaceholder");
+		whitehouseScript = whitehouse.GetComponent<Whitehouse>();
 
 		// fill list
 		projects.Add(carpoolScript);
 		projects.Add(streetScript);
-
+		projects.Add(whitehouseScript);
+		*/
 		buildTown();
 	}
 
 	void nextDay()
 	{
-		day++;
+		overseer.day++;
+		overseer.Income();
 		foreach (Project p in projects)
 		{
 			p.Construct();
 		}
-
 	}
 	
 	// Update is called once per frame
@@ -58,11 +78,8 @@ public class Game : MonoBehaviour
 	{
 		if(Input.GetKeyDown("space"))
 		{
-
 			spaceKeyDown = true;
-
 			nextDay();
-
 		}
 
 		if(Input.GetKeyUp("space"))
@@ -76,6 +93,7 @@ public class Game : MonoBehaviour
 		foreach (Project p in projects)
 		{
 			p.FillSpriteRenderer();
+			p.Initiate();
 		}
 
 	}

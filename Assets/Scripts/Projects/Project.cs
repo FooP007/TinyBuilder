@@ -4,17 +4,19 @@ using System.Collections;
 public class Project : MonoBehaviour 
 {
 	public TextMesh clockText;
-
-	protected Sprite[] sprites;
-	protected int[] costs;
-	protected int[] capacities;
-	protected int[] buildingRounds;
-	protected int[] requiredPoints = new int[1];
-	protected int[] requiredWhitehouse;
-
 	public int projectLevel = 0;
-	protected GameObject project;
+	public Sprite[] projectSprites;
+	public Sprite[] placeholderSprites;
 
+	protected int[] costs = new int[1];
+	protected int[] capacities = new int[1];
+	protected int[] buildingRounds = new int[1];
+	protected int[] requiredPoints = new int[1];
+	protected int[] requiredWhitehouse = new int[1];
+
+	
+	protected GameObject project;
+	protected string _projectName;
 	protected bool constructing = false;
 	protected int constructinDays = 0;
 	protected int outOfRange = -1;
@@ -39,6 +41,7 @@ public class Project : MonoBehaviour
 			clockText.text = constructinDays.ToString();
 			if(constructinDays == 0)
 			{
+				Upgrade();
 				projectLevel++;
 				FillSpriteRenderer();
 				constructinDays = 0;
@@ -47,9 +50,27 @@ public class Project : MonoBehaviour
 		}
 	}
 
+	public void Initiate()
+	{
+
+		int range = projectLevel;
+
+		for(int i = 0; i < range; i++)
+		{
+			projectLevel = i;
+			Debug.Log ("project: " + this.name);
+			Upgrade();
+
+		}
+		projectLevel = range;
+	}
+
+	protected virtual void Upgrade()
+	{	}
+
 	public virtual bool MetRequirements()
 	{
-		if(Points() >= Game.overseer.points)
+		if(Game.overseer.points >= Points())
 		{
 			return true;
 		}
@@ -62,6 +83,12 @@ public class Project : MonoBehaviour
 
 	protected void OnMouseDown()
 	{
+		GameObject upgradeWindow = (GameObject)Instantiate(Resources.Load("UpgradeWIndow"));
+		upgradeWindow.transform.position = this.transform.position + new Vector3(0, 0.5f, 0);
+		UpgradeWindow script = upgradeWindow.GetComponent<UpgradeWindow>();
+		script.FillProejct(this);
+
+		/*
 		if(Rounds() != outOfRange)
 		{
 			if(Game.overseer.CanBuyProject(this, constructing))
@@ -73,6 +100,18 @@ public class Project : MonoBehaviour
 		{
 			Debug.Log ("Project is at maximum upgrade!");
 		}
+		*/
+	}
+
+	public string projectName
+	{
+		get{ return _projectName; }
+		set{ _projectName = value; }
+	}
+
+	public int Whitehouse()
+	{
+		return ArrayValue(requiredWhitehouse);
 	}
 
 	/**
@@ -131,13 +170,22 @@ public class Project : MonoBehaviour
 		SpriteRenderer appearence = project.GetComponent<SpriteRenderer>();
 		appearence.sortingLayerName = "Buildings";
 
-		if(projectLevel > 0 && projectLevel <= sprites.Length)
+		if(projectLevel >= 0 && projectLevel < placeholderSprites.Length)
 		{
-			appearence.sprite = sprites[projectLevel - 1];
+			GetComponent<SpriteRenderer>().sprite = placeholderSprites[projectLevel];
 		}
 		else
 		{
-			Debug.Log ("The given level was not in the expected range. Range :1 - " + sprites.Length +" but projectLevel was " + projectLevel);
+			Debug.Log ("The given level was not in the expected range. Range :0 - " + placeholderSprites.Length +" but projectLevel was " + projectLevel);
+		}
+		
+		if(projectLevel > 0 && projectLevel <= projectSprites.Length)
+		{
+			appearence.sprite = projectSprites[projectLevel - 1];
+		}
+		else
+		{
+			Debug.Log ("The given level was not in the expected range. Range :1 - " + projectSprites.Length +" but projectLevel was " + projectLevel);
 		}
 		
 	}
