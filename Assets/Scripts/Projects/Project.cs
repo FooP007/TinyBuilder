@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Project : MonoBehaviour 
 {
 	public TextMesh clockText;
+	protected Project dependence;
 	public int projectLevel = 0;
 	public Sprite[] projectSprites;
 	public Sprite[] placeholderSprites;
@@ -14,51 +15,120 @@ public class Project : MonoBehaviour
 	protected int[] requiredPoints = new int[1];
 	protected int[] requiredWhitehouse = new int[1];
 
-	
 	protected GameObject project;
 	protected string _projectName;
-	protected bool constructing = false;
-	protected int constructinDays = 0;
+    protected string _effectText;
+    protected string _requireText;
+    protected string _upgradeWindowResource = "UpgradeWindow";
+	
+	protected bool _constructing = false;
+	protected int _constructionDays = 0;
 	protected int outOfRange = -1;
+	protected float _offset = 1.1f;
 
-	protected void StartConstructing()
+    private GameObject upgradeWindow;
+    private UpgradeWindow uwScript;
+    private GameObject builder;
+    public List<GameObject> allBuilder = new List<GameObject>();
+
+    protected void StartConstructing()
 	{
-		constructinDays = Rounds();
-
-		if(constructinDays >= 0)
+        _constructionDays = Rounds();
+        Debug.Log("constructinDays: " + _constructionDays);
+		if(_constructionDays >= 0)
 		{
-			constructing = true;
-			clockText.text = constructinDays.ToString();
+            _constructing = true;
+			clockText.text = _constructionDays.ToString();
 		}
-
 	}
 
-	public void Construct()
+    private void Update()
+    {
+        
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        Debug.DrawRay(Camera.main.transform.position, Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            
+            if (Input.GetMouseButtonDown(0))
+            {
+                
+                if (uwScript != null)
+                {
+                    if (hit.collider.gameObject == uwScript.upgradeButton)
+                    {
+                        TryConstructing();
+                    }
+
+                    if (hit.collider.gameObject == uwScript.closeButton)
+                    {
+                        CloseUpgradeWindow();
+                    }
+                }
+
+                if(builder != null)
+                {
+                    if (hit.collider.gameObject == builder)
+                    {
+                       
+                        allBuilder.Remove(builder);
+                        DestroyObject(builder);
+                        Construct();
+                        Game.overseer.BuilderUsed();
+                        if (allBuilder.Count >= 1)
+                        {
+                            builder = allBuilder[allBuilder.Count-1];
+                           
+                        }
+
+                    }
+                }
+                else
+                {
+                    // Debug.Log("builder ist null");
+                }
+                
+            }
+        }
+    }
+
+    public void Construct()
 	{
-		if(constructing)
+		if(_constructing)
 		{
-			constructinDays--;
-			clockText.text = constructinDays.ToString();
-			if(constructinDays == 0)
+            _constructionDays--;
+			clockText.text = _constructionDays.ToString();
+			if(_constructionDays == 0)
 			{
 				Upgrade();
 				projectLevel++;
-				FillSpriteRenderer();
-				constructinDays = 0;
-				constructing = false;
+                // remove all builder
+                foreach (GameObject b in allBuilder)
+                {
+                    Destroy(b);
+                }
+
+                for (var i = 0; i < allBuilder.Count; i++)
+                {
+                    allBuilder.RemoveAt(i);
+                }
+
+                FillSpriteRenderer();
+                _constructionDays = 0;
+                _constructing = false;
 			}
 		}
 	}
 
 	public void Initiate()
 	{
-
 		int range = projectLevel;
 
 		for(int i = 0; i < range; i++)
 		{
 			projectLevel = i;
-			Debug.Log ("project: " + this.name);
 			Upgrade();
 
 		}
@@ -66,9 +136,12 @@ public class Project : MonoBehaviour
 	}
 
 	protected virtual void Upgrade()
-	{	}
+	{ }
 
-	public virtual bool MetRequirements()
+    protected virtual void UpdateText(int inputLevel)
+    { }
+
+    public virtual bool MetRequirements()
 	{
 		if(Game.overseer.points >= Points())
 		{
@@ -81,26 +154,82 @@ public class Project : MonoBehaviour
 		}
 	}
 
-	protected void OnMouseDown()
+	public void TryConstructing()
 	{
-		GameObject upgradeWindow = (GameObject)Instantiate(Resources.Load("UpgradeWIndow"));
-		upgradeWindow.transform.position = this.transform.position + new Vector3(0, 0.5f, 0);
-		UpgradeWindow script = upgradeWindow.GetComponent<UpgradeWindow>();
-		script.FillProejct(this);
-
-		/*
 		if(Rounds() != outOfRange)
 		{
 			if(Game.overseer.CanBuyProject(this, constructing))
 			{
-				StartConstructing();
+                Game.overseer.coins -= (Cost() - Game.overseer.discount);
+                StartConstructing();
+				CloseUpgradeWindow();
 			}
 		}
 		else
 		{
 			Debug.Log ("Project is at maximum upgrade!");
 		}
-		*/
+	}
+
+	protected void OnMouseDown()
+	{
+		if(!_constructing)
+		{
+			if(upgradeWindow == null)
+            {
+                upgradeWindow = (GameObject)Instantiate(Resources.Load(upgradeWindowResource), (transform.position + new Vector3(0, offset, 0)), Quaternion.identity);
+                uwScript = upgradeWindow.GetComponent<UpgradeWindow>();
+                uwScript.Show(this);
+            }
+		}
+	}
+
+    public void CloseUpgradeWindow()
+    {
+        Destroy(upgradeWindow);
+    }
+
+    public void AddBuilder(int count)
+    {
+        builder = (GameObject)Instantiate(Resources.Load("Builder"), transform.position + new Vector3(0 + (0.6f * count), 0.5f, 0), Quaternion.identity);
+        Debug.Log(builder);
+        Debug.Log(allBuilder);
+        allBuilder.Add(builder);
+    }
+
+    public int constructionDays
+    {
+        get { return _constructionDays; }
+        set { _constructionDays = value; }
+    }
+
+    public bool constructing
+    {
+        get { return _constructing; }
+    }
+
+    public float offset
+	{
+		get{ return _offset; }
+		set{ _offset = value; }
+	}
+
+	public string upgradeWindowResource
+	{
+		get{ return _upgradeWindowResource; }
+		set{ _upgradeWindowResource = value; }
+	}
+
+    public string requireText
+    {
+        get { return _requireText; }
+        set { _requireText = value; }
+    }
+
+    public string effectText
+	{
+		get{ return _effectText; }
+		set{ _effectText = value; }
 	}
 
 	public string projectName

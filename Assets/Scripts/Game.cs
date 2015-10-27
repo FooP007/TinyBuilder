@@ -7,34 +7,21 @@ public class Game : MonoBehaviour
 	public int startDay = 0;
 
 	// Village
-	private GameObject carpool;
-	private GameObject street;
-	private GameObject whitehouse;
-
-	private Carpool carpoolScript;
-	private Street streetScript;
-	private Whitehouse whitehouseScript;
-
-	private List<Project> projects = new List<Project>();
+	public static List<Project> projects = new List<Project>();
 
 	private bool spaceKeyDown = false;
-
-	// 
-
-
 
 	// Use this for initialization
 	void Start () 
 	{
 		overseer = Overseer.Instance;
 
-		overseer.coins = 15;
-		overseer.points = 0;
+		overseer.coins = 15 + 1000;
+		overseer.points = 0+ 20;
 		overseer.citizen = 5;
 		overseer.capacity = 5;
 		overseer.environmentPoints = 0;
 		overseer.day = startDay;
-
 
 		GameObject[] transitionProjects = GameObject.FindGameObjectsWithTag("Project");
 
@@ -44,34 +31,52 @@ public class Game : MonoBehaviour
 			projects.Add(script);
 		}
 
-		/* find all projects
-		street = GameObject.FindGameObjectWithTag("StreetPlaceholder");
-		streetScript = street.GetComponent<Street>();
-
-		carpool = GameObject.FindGameObjectWithTag("CarpoolPlaceholder");
-		carpoolScript = carpool.GetComponent<Carpool>();
-		carpoolScript.getAppendend(streetScript);
-
-		whitehouse = GameObject.FindGameObjectWithTag("WhitehousePlaceholder");
-		whitehouseScript = whitehouse.GetComponent<Whitehouse>();
-
-		// fill list
-		projects.Add(carpoolScript);
-		projects.Add(streetScript);
-		projects.Add(whitehouseScript);
-		*/
 		buildTown();
 	}
 
-	void nextDay()
+	void NextDay()
 	{
-		overseer.day++;
-		overseer.Income();
-		foreach (Project p in projects)
-		{
-			p.Construct();
-		}
-	}
+
+        ShowBuilder();
+        overseer.day++;
+        overseer.Income();
+        overseer.builder = overseer.maxBuilder;
+
+        foreach (Project p in projects)
+        {
+            p.Construct();
+        }
+    }
+
+    void ShowBuilder()
+    {
+        // check if the player can use builder
+        if (overseer.builder > 0)
+        {
+
+            foreach (Project p in projects)
+            {
+                if (p.constructing)
+                {
+                    int length;
+
+                    if (p.constructionDays < overseer.builder)
+                    {
+                        length = (p.constructionDays - 1);
+                    }
+                    else
+                    {
+                        length = overseer.builder;
+                    }
+
+                    for (int i = 0; i < length; i++)
+                    {
+                        p.AddBuilder(i);
+                    }
+                }
+            }
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () 
@@ -79,14 +84,19 @@ public class Game : MonoBehaviour
 		if(Input.GetKeyDown("space"))
 		{
 			spaceKeyDown = true;
-			nextDay();
+            GameObject[] allBuilder = GameObject.FindGameObjectsWithTag("Builder");
+            if (allBuilder.Length == 0)
+            {
+                NextDay();
+            }
 		}
 
 		if(Input.GetKeyUp("space"))
 		{
 			spaceKeyDown = false;
 		}
-	}
+
+    }
 
 	void buildTown()
 	{
@@ -95,6 +105,5 @@ public class Game : MonoBehaviour
 			p.FillSpriteRenderer();
 			p.Initiate();
 		}
-
 	}
 }

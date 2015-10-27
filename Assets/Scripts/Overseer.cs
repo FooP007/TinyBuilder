@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
-public class Overseer : MonoBehaviour 
+public class Overseer : MonoBehaviour
 {
+   
+    private GameObject upgradeWindow;
+
 	private static Overseer instance = null;
 
 	private TextMesh coinText;
@@ -18,8 +21,12 @@ public class Overseer : MonoBehaviour
 	private int _capacity;
 	private int _environmentPoints;
 	private int _day;
-	
-	private Overseer()
+    private int _discount;
+    private int _builder;
+
+    private int _maxBuilder; 
+
+    private Overseer()
 	{
 		coinText = GameObject.FindGameObjectWithTag("Coin").GetComponent<TextMesh>();
 		pointText = GameObject.FindGameObjectWithTag("Point").GetComponent<TextMesh>();
@@ -40,24 +47,36 @@ public class Overseer : MonoBehaviour
 			return instance;
 		}
 	}
+    
+    public bool Solvent(Project project)
+    {
+        if (coins >= project.Cost() - discount)
+        {
+            Debug.Log("Project buy succesfully! Costs: " + project.Cost() + " coins: " + coins);
 
-	public bool CanBuyProject(Project project, bool constructing)
+            //coins -= project.Cost();
+            Debug.Log("new income: " + coins);
+            return true;
+        }
+        else
+        {
+            Debug.Log("Not enough coins! Your coins: " + coins + ". Coins needed: " + project.Cost());
+            return false;
+        }
+    }
+
+    public bool CanBuyProject(Project project, bool constructing)
 	{
 		if(!constructing)
 		{
 			if(project.MetRequirements())
 			{
-				if(coins >= project.Cost())
+				if(Solvent(project))
 				{
-					Debug.Log ("Project buy succesfully! Costs: " + project.Cost() +" coins: "+ coins );
-
-					coins -= project.Cost();
-					Debug.Log ("new income: " + coins);
 					return true;
 				}
 				else
 				{
-					Debug.Log ("Not enough coins! Your coins: " + coins +". Coins needed: " + project.Cost());
 					return false;
 				}
 			}
@@ -74,7 +93,41 @@ public class Overseer : MonoBehaviour
 		}
 	}
 
-	public void Income()
+    public void UpdateUpgradeWindows()
+    {
+        GameObject[] upgradeWindows = GameObject.FindGameObjectsWithTag("UpgradeWindow");
+
+        foreach(GameObject uw in upgradeWindows)
+        {
+            UpgradeWindow uwScript =  uw.GetComponent<UpgradeWindow>();
+            uwScript.UpdateText();
+        }
+    }
+
+    public void BuilderUsed()
+    {
+        builder--;
+        if (builder == 0)
+        {
+            Debug.Log("remove all builder");
+
+            foreach (Project p in Game.projects)
+            {
+                foreach (GameObject b in p.allBuilder)
+                {
+                   
+                    DestroyObject(b);
+                }
+
+                for (var i = 0; i < p.allBuilder.Count; i++)
+                {
+                    p.allBuilder.RemoveAt(i);
+                }
+            }
+        }
+    }
+
+    public void Income()
 	{
 		if(capacity >= citizen)
 		{
@@ -85,7 +138,30 @@ public class Overseer : MonoBehaviour
 		coins += citizen;
 	}
 
-	public int day
+    public int discount
+    {
+        get { return _discount; }
+        set { _discount = value; }
+    }
+    /**
+     * The amount of builder indicates how many time 
+     * the player can reduce the building rounds of one of the buildings
+    */
+    public int builder
+    {
+        get { return _builder; }
+        set {
+            Debug.Log("builder: " + value);
+            _builder = value; }
+    }
+
+    public int maxBuilder
+    {
+        get { return _maxBuilder; }
+        set { _maxBuilder = value; }
+    }
+
+    public int day
 	{
 		get { return _day; }
 		set { 
@@ -100,6 +176,7 @@ public class Overseer : MonoBehaviour
 		set { 
 				_coins = value; 
 				coinText.text = value.ToString();
+                UpdateUpgradeWindows();
 			}
 	}
 
@@ -126,7 +203,7 @@ public class Overseer : MonoBehaviour
 		get { return _citizen; }
 		set { 
 				_citizen = value;
-			citizenText.text = value.ToString()+ " Citizen";
+			    citizenText.text = value.ToString()+ " Citizen";
 			}
 	}
 
@@ -135,7 +212,7 @@ public class Overseer : MonoBehaviour
 		get { return _capacity; }
 		set { 
 				_capacity = value;
-			capacityText.text = value.ToString()+ " Capacity";
+			    capacityText.text = value.ToString()+ " Capacity";
 			}
 	}
 
