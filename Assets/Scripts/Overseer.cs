@@ -53,8 +53,6 @@ public class Overseer : MonoBehaviour
         if (coins >= project.Cost() - discount)
         {
             Debug.Log("Project buy succesfully! Costs: " + project.Cost() + " coins: " + coins);
-
-            //coins -= project.Cost();
             Debug.Log("new income: " + coins);
             return true;
         }
@@ -92,17 +90,6 @@ public class Overseer : MonoBehaviour
 			return false;
 		}
 	}
-
-    public void UpdateUpgradeWindows()
-    {
-        GameObject[] upgradeWindows = GameObject.FindGameObjectsWithTag("UpgradeWindow");
-
-        foreach(GameObject uw in upgradeWindows)
-        {
-            UpgradeWindow uwScript =  uw.GetComponent<UpgradeWindow>();
-            uwScript.UpdateText();
-        }
-    }
 
     public void BuilderUsed()
     {
@@ -150,9 +137,7 @@ public class Overseer : MonoBehaviour
     public int builder
     {
         get { return _builder; }
-        set {
-            Debug.Log("builder: " + value);
-            _builder = value; }
+        set { _builder = value; }
     }
 
     public int maxBuilder
@@ -176,7 +161,7 @@ public class Overseer : MonoBehaviour
 		set { 
 				_coins = value; 
 				coinText.text = value.ToString();
-                UpdateUpgradeWindows();
+                Game.UpdateUpgradeWindows();
 			}
 	}
 
@@ -203,8 +188,8 @@ public class Overseer : MonoBehaviour
 		get { return _citizen; }
 		set { 
 				_citizen = value;
-			    citizenText.text = value.ToString()+ " Citizen";
-			}
+			    citizenText.text = value.ToString()+ " Citizen";               
+            }
 	}
 
 	public int capacity
@@ -213,7 +198,7 @@ public class Overseer : MonoBehaviour
 		set { 
 				_capacity = value;
 			    capacityText.text = value.ToString()+ " Capacity";
-			}
+            }
 	}
 
 

@@ -23,29 +23,13 @@ public class Street : Project
 		buildingRounds = new int[5] {2,4,6,8,10};
 		requiredWhitehouse = new int[5] {1,2,3,4,5};
 
-        UpdateText(projectLevel);
+        UpdateText(projectLevel, new string[1] { "capacity" }, new int[1][] { capacities }, "Whitehouse level: ", requiredWhitehouse);
     }
 
 	protected override void Upgrade()
 	{
-		Debug.Log ("Capacity: " + Capacity());
 		Game.overseer.capacity += Capacity();
-        UpdateText(projectLevel + 1);
-    }
-
-    protected override void UpdateText(int inputLevel)
-    {
-        if (inputLevel >= costs.Length - 1)
-        {
-            effectText = "Maximum Upgrade";
-            requireText = "Maximum Upgrade";
-        }
-        else
-        {
-            // has to be +2 because thew whitehouse starts at level 1 and not 0 like all the other projects
-            effectText = "+" + capacities[inputLevel] + " capacity";
-            requireText = "Whitehouse level: " + requiredWhitehouse[inputLevel];
-        }
+        UpdateText(projectLevel + 1, new string[1] { "capacity" }, new int[1][] { capacities }, "Whitehouse level: ", requiredWhitehouse);
     }
 
     public override bool MetRequirements()

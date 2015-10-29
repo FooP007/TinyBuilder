@@ -48,6 +48,7 @@
      <Compile Include="Assets\Scripts\CloseButton.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
      <Compile Include="Assets\Scripts\Overseer.cs" />
+     <Compile Include="Assets\Scripts\Projects\Bus.cs" />
      <Compile Include="Assets\Scripts\Projects\Carpool.cs" />
      <Compile Include="Assets\Scripts\Projects\CycleTrack.cs" />
      <Compile Include="Assets\Scripts\Projects\Houses.cs" />
@@ -55,6 +56,7 @@
      <Compile Include="Assets\Scripts\Projects\Project.cs" />
      <Compile Include="Assets\Scripts\Projects\Station.cs" />
      <Compile Include="Assets\Scripts\Projects\Street.cs" />
+     <Compile Include="Assets\Scripts\Projects\Train.cs" />
      <Compile Include="Assets\Scripts\Projects\Whitehouse.cs" />
      <Compile Include="Assets\Scripts\SetSortingLayer.cs" />
      <Compile Include="Assets\Scripts\UpgradeWindow.cs" />

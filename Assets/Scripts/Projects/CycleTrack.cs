@@ -22,8 +22,7 @@ public class CycleTrack : Project
 		buildingRounds = new int[5] {1,2,3,4,5};
 		requiredWhitehouse = new int[5] {1,2,3,4,5};
 
-        effectText = "+" + capacities[projectLevel + 1] + " capacity" + "\n + " + extraPointsList[projectLevel + 1] + " envir pts";
-        requireText = "Whitehouse level: " + requiredWhitehouse[projectLevel];
+        UpdateText(projectLevel, new string[2] { " capacity", " envir pts" }, new int[2][] { capacities, extraPointsList }, "Street level: ", requiredWhitehouse);
     }
 	
 	protected override void Upgrade()
@@ -32,8 +31,7 @@ public class CycleTrack : Project
 		Game.overseer.capacity += Capacity();
 		Game.overseer.environmentPoints += extraPointsList[projectLevel];
 
-        effectText = "+" + capacities[projectLevel+1] + " capacity" + "\n + " + extraPointsList[projectLevel+1] + " environment pts";
-        requireText = "Whitehouse level: " + requiredWhitehouse[projectLevel+1];
+        UpdateText(projectLevel + 1, new string[2] { " capacity", " envir pts" }, new int[2][] { capacities, extraPointsList }, "Street level: ", requiredWhitehouse);
     }
 	
 	public override bool MetRequirements()

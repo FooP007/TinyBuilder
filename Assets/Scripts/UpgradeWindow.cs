@@ -46,11 +46,27 @@ public class UpgradeWindow : MonoBehaviour
             if (!Game.overseer.Solvent(_project) && !maximumUpgrade)
             {
                 costText.color = Color.red;
+                SpriteRenderer curRemd = upgradeButton.GetComponent<SpriteRenderer>();
+                curRemd.color = Color.red;
+            }
+            else
+            {
+                costText.color = Color.black;
+                SpriteRenderer curRemd = upgradeButton.GetComponent<SpriteRenderer>();
+                curRemd.color = Color.white;
             }
 
             if (!_project.MetRequirements() && !maximumUpgrade)
             {
+                SpriteRenderer curRemd = upgradeButton.GetComponent<SpriteRenderer>();
+                curRemd.color = Color.red;
                 requirementText.color = Color.red;
+            }
+            else
+            {
+                SpriteRenderer curRemd = upgradeButton.GetComponent<SpriteRenderer>();
+                curRemd.color = Color.white;
+                requirementText.color = Color.black;
             }
         }
        

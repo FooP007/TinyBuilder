@@ -12,39 +12,20 @@ public class Whitehouse : Project
 	{
 		project = GameObject.FindGameObjectWithTag("Whitehouse");
 
-	}
-
-	void Start()
-	{
-		projectName = "Whitehouse";
-       
+        projectName = "Whitehouse";
         clockText.text = "0";
-		costs           = new int[5] {0, 10, 20,  30,  40};
-		buildingRounds  = new int[5] {0,  2,  4,   6,   8};
-		requiredPoints  = new int[5] {0, 20, 80, 200, 400};
-       
-        UpdateText(projectLevel);
 
+        costs = new int[5] { 0, 10, 20, 30, 40 };
+        buildingRounds = new int[5] { 0, 2, 4, 6, 8 };
+        requiredPoints = new int[5] { 0, 20, 80, 200, 400 };
+
+       
+        UpdateText(projectLevel, new string[1] { "Whitehouse level" }, new int[1][] { new int[1] { projectLevel } }, "Points: ", requiredPoints, false);
     }
 
     protected override void Upgrade()
     {
-        UpdateText(projectLevel + 1);
 
-    }
-
-    protected override void UpdateText(int inputLevel)
-    {
-        if (inputLevel >= costs.Length )
-        {
-            effectText = "Maximum Upgrade";
-            requireText = "Maximum Upgrade";
-        }
-        else
-        {
-            // has to be +2 because thew whitehouse starts at level 1 and not 0 like all the other projects
-            effectText = "Whitehouse level" + (projectLevel + 1);
-            requireText = "Points: " + requiredPoints[inputLevel];
-        }
+        UpdateText(projectLevel + 1, new string[1] { "Whitehouse level" }, new int[1][] { new int[1] { (projectLevel + 1) } }, "Points: ", requiredPoints, false);
     }
 }

@@ -106,4 +106,15 @@ public class Game : MonoBehaviour
 			p.Initiate();
 		}
 	}
+
+    public static void UpdateUpgradeWindows()
+    {
+        GameObject[] upgradeWindows = GameObject.FindGameObjectsWithTag("UpgradeWindow");
+        Debug.Log("updated upgrade windows!!!!");
+        foreach (GameObject uw in upgradeWindows)
+        {
+            UpgradeWindow uwScript = uw.GetComponent<UpgradeWindow>();
+            uwScript.UpdateText();
+        }
+    }
 }

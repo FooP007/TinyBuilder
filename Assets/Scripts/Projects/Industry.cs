@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class Industry : Project
@@ -22,7 +23,7 @@ public class Industry : Project
         buildingRounds = new int[5] { 2, 4, 6, 8, 10 };
         requiredWhitehouse = new int[5] { 1, 2, 3, 4, 5 };
 
-        UpdateText(projectLevel);
+        UpdateText(projectLevel + 1, new string[1] { "Discount" }, new int[1][] { discounts }, "Whitehouse level: ", requiredWhitehouse, false);
     }
 
     protected override void Upgrade()
@@ -42,37 +43,47 @@ public class Industry : Project
             Game.overseer.maxBuilder = builders[projectLevel];
             Game.overseer.builder = builders[projectLevel];
         }
-        UpdateText(projectLevel + 1);
-       
+        
+        
+        switch (ComposedText(projectLevel + 1))
+        {
+            case 1:
+                UpdateText(projectLevel + 1, new string[1] { "Builder" }, new int[1][] { builders }, "Whitehouse level: ", requiredWhitehouse, false);
+            break;
+
+            case 2:
+                UpdateText(projectLevel + 1, new string[1] { "Discount" }, new int[1][] { discounts }, "Whitehouse level: ", requiredWhitehouse, false);
+            break;
+
+            case 3:
+                UpdateText(projectLevel + 1, new string[2] { "Discount", " Builder" }, new int[2][] { discounts, builders }, "Whitehouse level: ", requiredWhitehouse, false);
+            break;
+
+            default:
+                Debug.Log("wrong resutl");
+            break;
+
+        }
     }
 
-    protected override void UpdateText(int inputLevel)
+    private int ComposedText(int inputLevel)
     {
-        if (inputLevel >= costs.Length - 1)
-        {
-            effectText = "Maximum Upgrade";
-            requireText = "Maximum Upgrade";
-        }
-        else
-        {
-            effectText = "";
+        int result = 0; ;
 
+        if (discounts[inputLevel] != 0)
+        {
+            result = 2;
+        }
+
+        if (builders[inputLevel] != 0)
+        {
             if (discounts[inputLevel] != 0)
             {
-                effectText = "Discount: " + discounts[inputLevel];
+                result = 3;
             }
-
-            if (builders[inputLevel] != 0)
-            {
-                if (discounts[inputLevel] != 0)
-                {
-                    effectText += "\n";
-                }
-                effectText += "Builder: " + builders[inputLevel];
-            }
-
-            requireText = "Whitehouse level: " + requiredWhitehouse[inputLevel];
+            result = 1; ;
         }
+        return result;
     }
 
     public override bool MetRequirements()

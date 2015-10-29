@@ -39,6 +39,10 @@ public class Project : MonoBehaviour
 		{
             _constructing = true;
 			clockText.text = _constructionDays.ToString();
+            if(_constructionDays == 0)
+            {
+                Construct();
+            }
 		}
 	}
 
@@ -98,12 +102,13 @@ public class Project : MonoBehaviour
 	{
 		if(_constructing)
 		{
-            _constructionDays--;
+            constructionDays--;
 			clockText.text = _constructionDays.ToString();
 			if(_constructionDays == 0)
 			{
 				Upgrade();
 				projectLevel++;
+                Game.UpdateUpgradeWindows();
                 // remove all builder
                 foreach (GameObject b in allBuilder)
                 {
@@ -136,10 +141,61 @@ public class Project : MonoBehaviour
 	}
 
 	protected virtual void Upgrade()
-	{ }
+	{   }
 
-    protected virtual void UpdateText(int inputLevel)
-    { }
+    protected void UpdateText(int inputLevel, string[] effects, int[][] effectNumbers, string required, int[]requiredNumber, bool isValue = true)
+    {
+        // costs.length == maximum level
+        if (inputLevel >= costs.Length)
+        {
+            effectText = "Maximum Upgrade";
+            requireText = "Maximum Upgrade";
+        }
+        else
+        {
+            if(isValue)
+            {
+                effectText = "";
+               
+                if (effects.Length <= effectNumbers[0].Length)
+                {
+                    for (int i = 0; i < effects.Length; i++)
+                    {
+                        effectText += "+ " + effectNumbers[i][inputLevel] + effects[i] + "\n";
+                    }
+                }
+                else
+                {
+                    Debug.Log("the array effectNumbers dont have enough members! effects: " + effects.Length + " members - effectNumbers: " + effectNumbers[0].Length + " members");
+                }
+                
+            }
+            else
+            {
+                for (int i = 0; i < effects.Length; i++)
+                {
+                    // the effect is the upgrade od this project
+                    if (effectNumbers.Length < 2)
+                    {
+                        effectText = effects[i] + inputLevel;
+                    }
+                    else
+                    {
+                        effectText = effects[i] + effectNumbers[i][inputLevel];
+                    }
+                }
+            }
+
+            if (requiredNumber.Length < 2)
+            {
+                requireText = required + requiredNumber[0];
+            }
+            else
+            {
+                requireText = required + requiredNumber[inputLevel];
+            }
+        }
+    }
 
     public virtual bool MetRequirements()
 	{
@@ -200,7 +256,12 @@ public class Project : MonoBehaviour
     public int constructionDays
     {
         get { return _constructionDays; }
-        set { _constructionDays = value; }
+        set { _constructionDays = value;
+              if (_constructionDays < 0)
+              {
+                _constructionDays = 0;
+              }
+            }
     }
 
     public bool constructing
@@ -314,7 +375,7 @@ public class Project : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log ("The given level was not in the expected range. Range :1 - " + projectSprites.Length +" but projectLevel was " + projectLevel);
+			Debug.Log ("The given level was not in the expected range. Range :1 - " + projectSprites.Length +" but projectLevel was " + projectLevel + " project: " + project.name);
 		}
 		
 	}
