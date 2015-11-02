@@ -27,6 +27,7 @@ public class Bus : Project
 
     protected override void Upgrade()
     {
+        Game.overseer.capacity += Capacity();
         UpdateText(projectLevel + 1, new string[1] { "capacity" }, new int[1][] { capacities }, "Whitehouse level: ", requiredWhitehouse);
     }
 

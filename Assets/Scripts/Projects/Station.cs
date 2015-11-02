@@ -19,13 +19,13 @@ public class Station : Project
         buildingRounds      = new int[2] {  2,  8 };
         requiredWhitehouse  = new int[2] {  2,  3 };
 
-        UpdateText(projectLevel, new string[1] { "Station level" }, new int[1][] { new int[1] { projectLevel } }, "Whitehouse level: ", requiredWhitehouse, false);
+        UpdateText(projectLevel, new string[1] { "Station level " }, new int[1][] { new int[1] { projectLevel + 1 } }, "Whitehouse level: ", requiredWhitehouse, false);
 
     }
 
     protected override void Upgrade()
     {
-        UpdateText(projectLevel + 1, new string[1] { "Station level" }, new int[1][] { new int[1] { (projectLevel + 1) } }, "Whitehouse level: ", requiredWhitehouse, false);
+        UpdateText(projectLevel + 1, new string[1] { "Station level " }, new int[1][] { new int[1] { (projectLevel + 1) } }, "Whitehouse level: ", requiredWhitehouse, false);
        
     }
 

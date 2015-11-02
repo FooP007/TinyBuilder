@@ -5,16 +5,13 @@ using System.Collections.Generic;
 public class Industry : Project
 {
     private int[] discounts = new int[5]    { 5, 0, 10, 0, 15 };
-    private int[] builders = new int[5]      { 0, 1,  0, 2,  3 };
+    private int[] builders  = new int[5]    { 0, 1,  0, 2,  3 };
 
     void Awake()
     {
         project = GameObject.FindGameObjectWithTag("Industry");
         dependence = GameObject.Find("PlaceholderWhitehouse").GetComponent<Whitehouse>();
-    }
 
-    void Start()
-    {
         projectName = "Industry";
         clockText.text = "0";
 
@@ -22,8 +19,11 @@ public class Industry : Project
         costs = new int[5] { 15, 25, 35, 45, 55 };
         buildingRounds = new int[5] { 2, 4, 6, 8, 10 };
         requiredWhitehouse = new int[5] { 1, 2, 3, 4, 5 };
+    }
 
-        UpdateText(projectLevel + 1, new string[1] { "Discount" }, new int[1][] { discounts }, "Whitehouse level: ", requiredWhitehouse, false);
+    void Start()
+    {
+        UpdateText(projectLevel, new string[1] { "Discount " }, new int[1][] { discounts }, "Whitehouse level: ", requiredWhitehouse, false);
     }
 
     protected override void Upgrade()
@@ -70,25 +70,32 @@ public class Industry : Project
     {
         int result = 0; ;
 
-        if (discounts[inputLevel] != 0)
+        if(inputLevel >= costs.Length)
         {
             result = 2;
         }
-
-        if (builders[inputLevel] != 0)
+        else
         {
             if (discounts[inputLevel] != 0)
             {
-                result = 3;
+                result = 2;
             }
-            result = 1; ;
+
+            if (builders[inputLevel] != 0)
+            {
+                if (discounts[inputLevel] != 0)
+                {
+                    result = 3;
+                }
+                result = 1; ;
+            }
         }
+        
         return result;
     }
 
     public override bool MetRequirements()
     {
-        Debug.Log("whitehouse level: " + dependence.projectLevel + " : " + Whitehouse() + " houses level");
         if (dependence.projectLevel >= Whitehouse())
         {
             return true;

@@ -33,8 +33,8 @@ public class Project : MonoBehaviour
 
     protected void StartConstructing()
 	{
+        Debug.Log("Porject: " + name);
         _constructionDays = Rounds();
-        Debug.Log("constructinDays: " + _constructionDays);
 		if(_constructionDays >= 0)
 		{
             _constructing = true;
@@ -76,17 +76,8 @@ public class Project : MonoBehaviour
                 {
                     if (hit.collider.gameObject == builder)
                     {
-                       
-                        allBuilder.Remove(builder);
-                        DestroyObject(builder);
-                        Construct();
-                        Game.overseer.BuilderUsed();
-                        if (allBuilder.Count >= 1)
-                        {
-                            builder = allBuilder[allBuilder.Count-1];
-                           
-                        }
 
+                        UseBuilder();
                     }
                 }
                 else
@@ -95,6 +86,19 @@ public class Project : MonoBehaviour
                 }
                 
             }
+        }
+    }
+
+    public void UseBuilder()
+    {
+        allBuilder.Remove(builder);
+        DestroyObject(builder);
+        Construct();
+        Game.overseer.BuilderUsed();
+        if (allBuilder.Count >= 1)
+        {
+            builder = allBuilder[allBuilder.Count - 1];
+
         }
     }
 
@@ -155,7 +159,7 @@ public class Project : MonoBehaviour
         {
             if(isValue)
             {
-                effectText = "";
+                effectText = null;
                
                 if (effects.Length <= effectNumbers[0].Length)
                 {
@@ -175,9 +179,9 @@ public class Project : MonoBehaviour
                 for (int i = 0; i < effects.Length; i++)
                 {
                     // the effect is the upgrade od this project
-                    if (effectNumbers.Length < 2)
+                    if (effectNumbers[0].Length < 2)
                     {
-                        effectText = effects[i] + inputLevel;
+                        effectText = effects[i] + effectNumbers[0][0];
                     }
                     else
                     {
@@ -237,19 +241,24 @@ public class Project : MonoBehaviour
                 uwScript = upgradeWindow.GetComponent<UpgradeWindow>();
                 uwScript.Show(this);
             }
+            else
+            {
+                CloseUpgradeWindow();
+            }
 		}
 	}
 
     public void CloseUpgradeWindow()
     {
-        Destroy(upgradeWindow);
+        if(upgradeWindow != null)
+        {
+            Destroy(upgradeWindow);
+        }
     }
 
     public void AddBuilder(int count)
     {
         builder = (GameObject)Instantiate(Resources.Load("Builder"), transform.position + new Vector3(0 + (0.6f * count), 0.5f, 0), Quaternion.identity);
-        Debug.Log(builder);
-        Debug.Log(allBuilder);
         allBuilder.Add(builder);
     }
 
@@ -375,7 +384,7 @@ public class Project : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log ("The given level was not in the expected range. Range :1 - " + projectSprites.Length +" but projectLevel was " + projectLevel + " project: " + project.name);
+			//Debug.Log ("The given level was not in the expected range. Range :1 - " + projectSprites.Length +" but projectLevel was " + projectLevel + " project: " + project.name);
 		}
 		
 	}

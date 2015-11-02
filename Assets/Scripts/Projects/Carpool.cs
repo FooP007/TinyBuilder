@@ -39,7 +39,6 @@ public class Carpool : Project
 
 	public override bool MetRequirements()
 	{
-		Debug.Log ("street level: " + street.projectLevel + " : " + projectLevel + " carpool level");
 		if(street.projectLevel > projectLevel)
 		{
 			return true;

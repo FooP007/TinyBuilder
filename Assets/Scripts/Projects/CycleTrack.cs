@@ -27,7 +27,6 @@ public class CycleTrack : Project
 	
 	protected override void Upgrade()
 	{
-		base.Upgrade();
 		Game.overseer.capacity += Capacity();
 		Game.overseer.environmentPoints += extraPointsList[projectLevel];
 
@@ -36,7 +35,6 @@ public class CycleTrack : Project
 	
 	public override bool MetRequirements()
 	{
-		Debug.Log ("whitehouse level: " + dependence.projectLevel + " : " + Whitehouse() + " houses level");
 		if(dependence.projectLevel >= Whitehouse())
 		{
 			return true;

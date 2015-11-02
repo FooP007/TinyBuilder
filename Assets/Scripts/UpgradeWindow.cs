@@ -24,7 +24,7 @@ public class UpgradeWindow : MonoBehaviour
         if(_project != null)
         {
             // (_project.projectLevel != _project.projectSprites.Length -1) == the project has his maximum upgrade
-            Debug.Log("projectLevel: " + _project.projectLevel + " -  projectSprites.Length: " + _project.projectSprites.Length);
+            //Debug.Log("projectLevel: " + _project.projectLevel + " -  projectSprites.Length: " + _project.projectSprites.Length);
             bool maximumUpgrade = (_project.projectLevel >= _project.projectSprites.Length);
 
             projectNameText.text = _project.projectName;
@@ -40,20 +40,18 @@ public class UpgradeWindow : MonoBehaviour
                 buildingroundsText.text = "Buildingrounds: 0";
             }
 
-            effectText.text = "Effect: \n " + _project.effectText;
+            effectText.text = "Effect: \n" + _project.effectText;
             requirementText.text = "Requires: \n" + _project.requireText;
 
             if (!Game.overseer.Solvent(_project) && !maximumUpgrade)
             {
+                SpriteRenderer upgradeButtonRenderer = upgradeButton.GetComponent<SpriteRenderer>();
+                upgradeButtonRenderer.color = Color.red;
                 costText.color = Color.red;
-                SpriteRenderer curRemd = upgradeButton.GetComponent<SpriteRenderer>();
-                curRemd.color = Color.red;
             }
             else
             {
                 costText.color = Color.black;
-                SpriteRenderer curRemd = upgradeButton.GetComponent<SpriteRenderer>();
-                curRemd.color = Color.white;
             }
 
             if (!_project.MetRequirements() && !maximumUpgrade)
@@ -64,9 +62,13 @@ public class UpgradeWindow : MonoBehaviour
             }
             else
             {
+                requirementText.color = Color.black;
+            }
+
+            if(Game.overseer.Solvent(_project)  && _project.MetRequirements() || maximumUpgrade)
+            {
                 SpriteRenderer curRemd = upgradeButton.GetComponent<SpriteRenderer>();
                 curRemd.color = Color.white;
-                requirementText.color = Color.black;
             }
         }
        

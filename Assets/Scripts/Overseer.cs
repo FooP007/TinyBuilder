@@ -50,10 +50,8 @@ public class Overseer : MonoBehaviour
     
     public bool Solvent(Project project)
     {
-        if (coins >= project.Cost() - discount)
+        if (coins >= (project.Cost() - discount))
         {
-            Debug.Log("Project buy succesfully! Costs: " + project.Cost() + " coins: " + coins);
-            Debug.Log("new income: " + coins);
             return true;
         }
         else
@@ -150,8 +148,9 @@ public class Overseer : MonoBehaviour
 	{
 		get { return _day; }
 		set { 
-			_day = value; 
-			dayText.text = "Day: " + value.ToString();
+			_day = value;
+            dayText.text = "Day: " + value.ToString();
+                
 		}
 	}
 	

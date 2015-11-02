@@ -6,18 +6,23 @@ public class Game : MonoBehaviour
 	public static Overseer overseer;
 	public int startDay = 0;
 
-	// Village
-	public static List<Project> projects = new List<Project>();
+    public GameObject UnitTest;
+    private UnitTest unitScript;
+
+    // Village
+    public static List<Project> projects = new List<Project>();
 
 	private bool spaceKeyDown = false;
+    private bool gameOver = false;
 
 	// Use this for initialization
 	void Start () 
 	{
-		overseer = Overseer.Instance;
+        unitScript = UnitTest.GetComponent<UnitTest>();
+        overseer = Overseer.Instance;
 
-		overseer.coins = 15 + 1000;
-		overseer.points = 0+ 20;
+		overseer.coins = 15;
+		overseer.points = 0;
 		overseer.citizen = 5;
 		overseer.capacity = 5;
 		overseer.environmentPoints = 0;
@@ -32,20 +37,24 @@ public class Game : MonoBehaviour
 		}
 
 		buildTown();
-	}
+        //unitScript.StartUnitTest();
+    }
 
-	void NextDay()
+	public void NextDay()
 	{
-
-        ShowBuilder();
-        overseer.day++;
-        overseer.Income();
-        overseer.builder = overseer.maxBuilder;
-
-        foreach (Project p in projects)
+        if(!gameOver)
         {
-            p.Construct();
-        }
+            ShowBuilder();
+            overseer.day++;
+            overseer.Income();
+            overseer.builder = overseer.maxBuilder;
+
+            foreach (Project p in projects)
+            {
+                p.Construct();
+            }
+        } 
+        
     }
 
     void ShowBuilder()
@@ -96,6 +105,11 @@ public class Game : MonoBehaviour
 			spaceKeyDown = false;
 		}
 
+        if (overseer.day == 30)
+        {
+            GameOver();
+        }
+
     }
 
 	void buildTown()
@@ -107,10 +121,17 @@ public class Game : MonoBehaviour
 		}
 	}
 
+    public void GameOver()
+    {
+        gameOver = true;
+        overseer.day++;
+        Debug.Log("GameOver");
+    }
+
     public static void UpdateUpgradeWindows()
     {
         GameObject[] upgradeWindows = GameObject.FindGameObjectsWithTag("UpgradeWindow");
-        Debug.Log("updated upgrade windows!!!!");
+        
         foreach (GameObject uw in upgradeWindows)
         {
             UpgradeWindow uwScript = uw.GetComponent<UpgradeWindow>();

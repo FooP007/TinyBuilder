@@ -20,12 +20,17 @@ public class Whitehouse : Project
         requiredPoints = new int[5] { 0, 20, 80, 200, 400 };
 
        
-        UpdateText(projectLevel, new string[1] { "Whitehouse level" }, new int[1][] { new int[1] { projectLevel } }, "Points: ", requiredPoints, false);
+        
+    }
+
+    void Start()
+    {
+        UpdateText(projectLevel, new string[1] { "Whitehouse level " }, new int[1][] { new int[1] { projectLevel + 1 } }, "Points: ", requiredPoints, false);
     }
 
     protected override void Upgrade()
     {
 
-        UpdateText(projectLevel + 1, new string[1] { "Whitehouse level" }, new int[1][] { new int[1] { (projectLevel + 1) } }, "Points: ", requiredPoints, false);
+        UpdateText(projectLevel + 1, new string[1] { "Whitehouse level " }, new int[1][] { new int[1] { (projectLevel + 2) } }, "Points: ", requiredPoints, false);
     }
 }
