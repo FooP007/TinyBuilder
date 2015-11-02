@@ -15,7 +15,7 @@ public class CycleTrack : Project
 	
 	void Start()
 	{
-		projectName = "Cylce track";
+		projectName = "Cylcetrack";
 		clockText.text = "0";
 		capacities = new int[5] {1,3,7,14,25};
 		costs = new int[5] {15,20,30,45,65};
@@ -41,7 +41,7 @@ public class CycleTrack : Project
 		}
 		else
 		{
-			Debug.Log ("Upgrade whitehouse first! whitehouse level:  " + dependence.projectLevel +". houses level: " + Whitehouse());
+			//Debug.Log ("Upgrade whitehouse first! whitehouse level:  " + dependence.projectLevel +". houses level: " + Whitehouse());
 			return false;
 		}
 	}

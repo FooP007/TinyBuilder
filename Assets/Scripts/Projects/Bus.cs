@@ -33,14 +33,14 @@ public class Bus : Project
 
     public override bool MetRequirements()
     {
-        Debug.Log("Station level: " + dependence.projectLevel + " : need" + Whitehouse() + " Station level");
+        
         if (dependence.projectLevel >= Whitehouse() && station.projectLevel >= 1)
         {
             return true;
         }
         else
         {
-            Debug.Log("Upgrade white or station first! station level:  " + dependence.projectLevel + ". Nedd Station level: " + Whitehouse());
+            //Debug.Log("Upgrade white or station first! station level:  " + dependence.projectLevel + ". Nedd Station level: " + Whitehouse());
             return false;
         }
     }

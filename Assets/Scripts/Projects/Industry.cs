@@ -60,7 +60,7 @@ public class Industry : Project
             break;
 
             default:
-                Debug.Log("wrong resutl");
+                Debug.Log("wrong result");
             break;
 
         }
@@ -102,7 +102,7 @@ public class Industry : Project
         }
         else
         {
-            Debug.Log("Upgrade whitehouse first! whitehouse level:  " + dependence.projectLevel + ". houses level: " + Whitehouse());
+            //Debug.Log("Upgrade whitehouse first! whitehouse level:  " + dependence.projectLevel + ". houses level: " + Whitehouse());
             return false;
         }
     }

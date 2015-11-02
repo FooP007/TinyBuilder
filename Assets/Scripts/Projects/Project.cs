@@ -33,7 +33,6 @@ public class Project : MonoBehaviour
 
     protected void StartConstructing()
 	{
-        Debug.Log("Porject: " + name);
         _constructionDays = Rounds();
 		if(_constructionDays >= 0)
 		{
@@ -170,9 +169,8 @@ public class Project : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("the array effectNumbers dont have enough members! effects: " + effects.Length + " members - effectNumbers: " + effectNumbers[0].Length + " members");
+                    //Debug.Log("the array effectNumbers dont have enough members! effects: " + effects.Length + " members - effectNumbers: " + effectNumbers[0].Length + " members");
                 }
-                
             }
             else
             {
@@ -209,7 +207,7 @@ public class Project : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log ("Not enough points! Your points: " + Game.overseer.points +". Points needed: " + Points());
+			//Debug.Log ("Not enough points! Your points: " + Game.overseer.points +". Points needed: " + Points());
 			return false;
 		}
 	}
@@ -227,7 +225,7 @@ public class Project : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log ("Project is at maximum upgrade!");
+			//Debug.Log ("Project is at maximum upgrade!");
 		}
 	}
 
@@ -276,6 +274,7 @@ public class Project : MonoBehaviour
     public bool constructing
     {
         get { return _constructing; }
+        set { _constructing = value; }
     }
 
     public float offset
@@ -355,7 +354,7 @@ public class Project : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log ("Error! Index is out of range. Array: " + array.ToString());
+			//Debug.Log ("Error! Index is out of range. Array: " + array.ToString());
 			return outOfRange;
 		}
 	}
@@ -369,23 +368,26 @@ public class Project : MonoBehaviour
 		SpriteRenderer appearence = project.GetComponent<SpriteRenderer>();
 		appearence.sortingLayerName = "Buildings";
 
+        // placeholder
 		if(projectLevel >= 0 && projectLevel < placeholderSprites.Length)
 		{
 			GetComponent<SpriteRenderer>().sprite = placeholderSprites[projectLevel];
 		}
 		else
 		{
-			Debug.Log ("The given level was not in the expected range. Range :0 - " + placeholderSprites.Length +" but projectLevel was " + projectLevel);
+			//Debug.Log ("The given level was not in the expected range. Range :0 - " + placeholderSprites.Length +" but projectLevel was " + projectLevel);
 		}
 		
+        // appearance of the project
 		if(projectLevel > 0 && projectLevel <= projectSprites.Length)
 		{
 			appearence.sprite = projectSprites[projectLevel - 1];
 		}
 		else
 		{
-			//Debug.Log ("The given level was not in the expected range. Range :1 - " + projectSprites.Length +" but projectLevel was " + projectLevel + " project: " + project.name);
-		}
+            appearence.sprite = null;
+            //Debug.Log ("The given level was not in the expected range. Range :1 - " + projectSprites.Length +" but projectLevel was " + projectLevel + " project: " + project.name);
+        }
 		
 	}
 }

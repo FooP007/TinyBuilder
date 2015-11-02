@@ -31,14 +31,14 @@ public class Station : Project
 
     public override bool MetRequirements()
     {
-        Debug.Log("whitehouse level: " + dependence.projectLevel + " : " + Whitehouse() + " houses level");
+       
         if (dependence.projectLevel >= Whitehouse())
         {
             return true;
         }
         else
         {
-            Debug.Log("Upgrade whitehouse first! whitehouse level:  " + dependence.projectLevel + ". houses level: " + Whitehouse());
+            //Debug.Log("Upgrade whitehouse first! whitehouse level:  " + dependence.projectLevel + ". houses level: " + Whitehouse());
             return false;
         }
     }

@@ -56,7 +56,7 @@ public class Overseer : MonoBehaviour
         }
         else
         {
-            Debug.Log("Not enough coins! Your coins: " + coins + ". Coins needed: " + project.Cost());
+            //Debug.Log("Not enough coins! Your coins: " + coins + ". Coins needed: " + project.Cost());
             return false;
         }
     }
@@ -84,7 +84,7 @@ public class Overseer : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log ("You cant upgrade this project at the moment because it is still under construction!");
+			//Debug.Log ("You cant upgrade this project at the moment because it is still under construction!");
 			return false;
 		}
 	}
@@ -94,8 +94,6 @@ public class Overseer : MonoBehaviour
         builder--;
         if (builder == 0)
         {
-            Debug.Log("remove all builder");
-
             foreach (Project p in Game.projects)
             {
                 foreach (GameObject b in p.allBuilder)

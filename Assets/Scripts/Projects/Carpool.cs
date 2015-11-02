@@ -45,7 +45,7 @@ public class Carpool : Project
 		}
 		else
 		{
-			Debug.Log ("Upgrade street first! Street level:  " + street.projectLevel +". Carpool level: " + projectLevel);
+			//Debug.Log ("Upgrade street first! Street level:  " + street.projectLevel +". Carpool level: " + projectLevel);
 			return false;
 		}
 	}

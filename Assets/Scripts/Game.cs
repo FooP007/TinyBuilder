@@ -37,7 +37,7 @@ public class Game : MonoBehaviour
 		}
 
 		buildTown();
-        //unitScript.StartUnitTest();
+        unitScript.StartUnitTestKombinatorik();
     }
 
 	public void NextDay()
@@ -53,8 +53,13 @@ public class Game : MonoBehaviour
             {
                 p.Construct();
             }
-        } 
-        
+        }
+
+        if (overseer.day == 30)
+        {
+            GameOver();
+        }
+
     }
 
     void ShowBuilder()
@@ -105,10 +110,7 @@ public class Game : MonoBehaviour
 			spaceKeyDown = false;
 		}
 
-        if (overseer.day == 30)
-        {
-            GameOver();
-        }
+       
 
     }
 
@@ -125,7 +127,35 @@ public class Game : MonoBehaviour
     {
         gameOver = true;
         overseer.day++;
-        Debug.Log("GameOver");
+        
+    }
+
+    public void GameReset()
+    {
+        overseer.coins = 15;
+        overseer.points = 0;
+        overseer.citizen = 5;
+        overseer.capacity = 5;
+        overseer.environmentPoints = 0;
+        overseer.day = startDay;
+
+        foreach (Project p in projects)
+        {
+            if(p is Whitehouse)
+            {
+                p.projectLevel = 1;
+            }
+            else
+            {
+                p.projectLevel = 0;
+            }
+            p.constructing = false;
+            p.constructionDays = 0;
+            p.clockText.text = "0";
+        }
+
+        buildTown();
+        gameOver = false;
     }
 
     public static void UpdateUpgradeWindows()

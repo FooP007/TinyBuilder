@@ -41,7 +41,7 @@ public class Street : Project
 		}
 		else
 		{
-			Debug.Log ("Upgrade Whitehouse first! Whitehouse level:  " + whitehouse.projectLevel +". Street level: " + projectLevel);
+			//Debug.Log ("Upgrade Whitehouse first! Whitehouse level:  " + whitehouse.projectLevel +". Street level: " + projectLevel);
 			return false;
 		}
 	}

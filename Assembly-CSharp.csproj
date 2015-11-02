@@ -47,6 +47,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CloseButton.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
+     <Compile Include="Assets\Scripts\Kombinatorik.cs" />
      <Compile Include="Assets\Scripts\Overseer.cs" />
      <Compile Include="Assets\Scripts\Projects\Bus.cs" />
      <Compile Include="Assets\Scripts\Projects\Carpool.cs" />

@@ -51,7 +51,7 @@ public class Train : Project
         }
         else
         {
-            Debug.Log("Upgrade white or station first! station level:  " + dependence.projectLevel + ". Nedd Station level: " + Whitehouse());
+            //Debug.Log("Upgrade white or station first! station level:  " + dependence.projectLevel + ". Nedd Station level: " + Whitehouse());
             return false;
         }
     }
