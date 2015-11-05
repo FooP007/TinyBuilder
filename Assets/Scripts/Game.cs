@@ -5,6 +5,7 @@ public class Game : MonoBehaviour
 {
 	public static Overseer overseer;
 	public int startDay = 0;
+    public int maxDays = 10;
 
     public GameObject UnitTest;
     private UnitTest unitScript;
@@ -37,7 +38,7 @@ public class Game : MonoBehaviour
 		}
 
 		buildTown();
-        unitScript.StartUnitTestKombinatorik();
+        unitScript.StartUnitTest4();
     }
 
 	public void NextDay()
@@ -55,7 +56,7 @@ public class Game : MonoBehaviour
             }
         }
 
-        if (overseer.day == 30)
+        if (overseer.day == maxDays)
         {
             GameOver();
         }
@@ -127,7 +128,7 @@ public class Game : MonoBehaviour
     {
         gameOver = true;
         overseer.day++;
-        
+        //Debug.Log("Game over was called!!");
     }
 
     public void GameReset()
@@ -136,6 +137,7 @@ public class Game : MonoBehaviour
         overseer.points = 0;
         overseer.citizen = 5;
         overseer.capacity = 5;
+        overseer.discount = 0;
         overseer.environmentPoints = 0;
         overseer.day = startDay;
 

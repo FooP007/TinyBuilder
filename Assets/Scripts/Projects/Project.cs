@@ -222,10 +222,14 @@ public class Project : MonoBehaviour
                 StartConstructing();
 				CloseUpgradeWindow();
 			}
+            else
+            {
+                Debug.Log("Project is at maximum upgrade!");
+            }
 		}
 		else
 		{
-			//Debug.Log ("Project is at maximum upgrade!");
+			Debug.Log ("Project is at maximum upgrade!");
 		}
 	}
 
