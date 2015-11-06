@@ -38,7 +38,7 @@ public class Game : MonoBehaviour
 		}
 
 		buildTown();
-        unitScript.StartUnitTest4();
+        unitScript.StartUnitTest6();
     }
 
 	public void NextDay()
@@ -110,9 +110,6 @@ public class Game : MonoBehaviour
 		{
 			spaceKeyDown = false;
 		}
-
-       
-
     }
 
 	void buildTown()
@@ -151,9 +148,10 @@ public class Game : MonoBehaviour
             {
                 p.projectLevel = 0;
             }
-            p.constructing = false;
+            
             p.constructionDays = 0;
             p.clockText.text = "0";
+            p.constructing = false;
         }
 
         buildTown();

@@ -224,7 +224,7 @@ public class Project : MonoBehaviour
 			}
             else
             {
-                Debug.Log("Project is at maximum upgrade!");
+                //Debug.Log("CanBuyProject = false!");
             }
 		}
 		else
