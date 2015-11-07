@@ -135,17 +135,23 @@ namespace Facet.Combinatorics {
             /// Performance is further increased by using value types and removing generics, that is, the LexicographicOrder parellel array.
             /// This is a issue with the .NET CLR not optimizing as well as it could in this infrequently used scenario.
             /// </remarks>
-            public bool MoveNext() {
-                if(myPosition == Position.BeforeFirst) {
+            public bool MoveNext()
+            {
+                if(myPosition == Position.BeforeFirst)
+                {
                     myValues = new List<T>(myParent.myValues.Count);
                     myValues.AddRange(myParent.myValues);
                     Array.Sort(myLexicographicalOrders);
                     myPosition = Position.InSet;
-                } else if(myPosition == Position.InSet) {
-                    if(myValues.Count < 2) {
+                }
+                else if(myPosition == Position.InSet)
+                {
+                    if(myValues.Count < 2)
+                    {
                         myPosition = Position.AfterLast;
                     }
-                    else if(NextPermutation() == false) {
+                    else if(NextPermutation() == false)
+                    {
                         myPosition = Position.AfterLast;
                     }
                 }
@@ -155,12 +161,16 @@ namespace Facet.Combinatorics {
             /// <summary>
             /// The current permutation.
             /// </summary>
-            public object Current {
-                get {
-                    if(myPosition == Position.InSet) {
+            public object Current
+            {
+                get
+                {
+                    if(myPosition == Position.InSet)
+                    {
                         return new List<T>(myValues);
                     }
-                    else {
+                    else
+                    {
                         throw new InvalidOperationException();
                     }
                 }
@@ -169,12 +179,16 @@ namespace Facet.Combinatorics {
             /// <summary>
             /// The current permutation.
             /// </summary>
-            IList<T> IEnumerator<IList<T>>.Current {
-                get {
-                    if(myPosition == Position.InSet) {
+            IList<T> IEnumerator<IList<T>>.Current
+            {
+                get
+                {
+                    if(myPosition == Position.InSet)
+                    {
                         return new List<T>(myValues);
                     }
-                    else {
+                    else
+                    {
                         throw new InvalidOperationException();
                     }
                 }

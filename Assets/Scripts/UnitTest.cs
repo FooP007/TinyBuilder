@@ -8,6 +8,7 @@ public class UnitTest : MonoBehaviour
 {
     public GameObject tinyBuilder;
     private Game mainGame;
+    private Variations<Project> variations;
 
     private List<Project[]> buildPaths = new List<Project[]>();
     private Project[] buildPath;
@@ -15,11 +16,9 @@ public class UnitTest : MonoBehaviour
 	// Use this for initialization
 	void Awake ()
     {
-
         mainGame = tinyBuilder.GetComponent<Game>();
         buildPath = new Project[mainGame.maxDays];
         buildPaths.Add(buildPath);
-
     }
 
     private bool HasFocus(List<Project> projects, Project focus)
@@ -566,13 +565,39 @@ public class UnitTest : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+       // AllVariations(variations, count);
+    }
+
+    private void AllVariations(Variations<Project> projects, int index)
+    {
+        string result = "";
+        for (int i = 0; i < projects.Count; i++)
+        {
+            //result += projects[index][i].projectName + " ";
+        }
+        Debug.Log(result);
+        
+    }
+
     public void StartUnitTest6()
     {
         List<Project> l = GetBuyAbleProjects();
         Debug.Log("BuyAbleProjects: " + l.Count);
-        Variations <Project> variations = new Variations<Project>(l, 3, GenerateOption.WithRepetition);
-        int count = (int)variations.Count;
+        variations = new Variations<Project>(l, 20, GenerateOption.WithRepetition);
+        long count = variations.Count;
         Debug.Log("count: " + count);
+
+        /*foreach (IList<Project> variation in variations)
+        {
+            string result = "";
+            for (int i =0; i< variation.Count; i++)
+            {
+                result += variation[i].projectName + " ";
+            }
+            Debug.Log(result);
+        }*/
         //Variations<int> variations = new Variations<int>(ints, cofs.Count);
         /*string[] output = GetPermutationIterative(mainGame.maxDays, GetBuyAbleProjects());
 
@@ -584,35 +609,22 @@ public class UnitTest : MonoBehaviour
 
     }
 
-    private string[] GetPermutationIterative(int places, List<Project> projects)
+    private string[] GetPermutationIterative(int days, List<Project> projects)
     {
         ArrayList output = new ArrayList();
         int count = 0;
-       
-        while (places != 0)
+
+        while(days != 0)
         {
-            string outputPart = "";
-            if (projects.Count > 0)
+            List<Project> possibilities = GetBuyAbleProjects();
+            foreach(Project p in possibilities)
             {
-                foreach (Project p in projects)
-                {
-                    p.TryConstructing();
-                   
-                    mainGame.NextDay();
-                    outputPart += p.projectName + " ";
-                    projects = GetBuyAbleProjects();
-                }
-            }
-            else
-            {
-                //outputPart.Add(null);
-                outputPart += "empty ";
+                p.TryConstructing();
                 mainGame.NextDay();
-                projects = GetBuyAbleProjects();
+
             }
-            output.Add(outputPart);
-            places--;
         }
+        
 
         //GetPermutationPerRefIterative(places, projects, ref output, ref count);
 
@@ -677,21 +689,6 @@ public class UnitTest : MonoBehaviour
                     mainGame.NextDay();
                     //Debug.Log("coins danach: " + Game.overseer.coins);
                     projects = GetBuyAbleProjects();
-                    
-                    string result = "";
-                    foreach (Project p2 in projects)
-                    {
-                        if (p2 != null)
-                        {
-                            result += p2.projectName + " ";
-                        }
-                        else
-                        {
-                            result += "result ";
-                        }
-                    }
-                    //Debug.Log(result);
-                   
 
                     // Danach wird für jedes dieser Zeichen, basierend auf der Anzahl der Stellen, wieder ein neuer
                     // foreach-Vorgang begonnen, der alle Zeichen der nächsten Stelle hinzufügt

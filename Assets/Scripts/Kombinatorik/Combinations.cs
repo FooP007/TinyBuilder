@@ -119,7 +119,8 @@ namespace Facet.Combinatorics {
             /// The heavy lifting is done by the permutations object, the combination is generated
             /// by creating a new list of those items that have a true in the permutation parrellel array.
             /// </remarks>
-            public bool MoveNext() {
+            public bool MoveNext()
+            {
                 bool ret = myPermutationsEnumerator.MoveNext();
                 myCurrentList = null;
                 return ret;
@@ -128,8 +129,10 @@ namespace Facet.Combinatorics {
             /// <summary>
             /// The current combination
             /// </summary>
-            public IList<T> Current {
-                get {
+            public IList<T> Current
+            {
+                get
+                {
                     ComputeCurrent();
                     return myCurrentList;
                 }
@@ -138,8 +141,10 @@ namespace Facet.Combinatorics {
             /// <summary>
             /// The current combination
             /// </summary>
-            object System.Collections.IEnumerator.Current {
-                get {
+            object System.Collections.IEnumerator.Current
+            {
+                get
+                {
                     ComputeCurrent();
                     return myCurrentList;
                 }
@@ -182,8 +187,10 @@ namespace Facet.Combinatorics {
             /// Generates set: {A   B B     D D    }
             /// Note: size of permutation is equal to upper index - 1 + lower index.
             /// </remarks>
-            private void ComputeCurrent() {
-                if(myCurrentList == null) {
+            private void ComputeCurrent()
+            {
+                if(myCurrentList == null)
+                {
                     myCurrentList = new List<T>();
                     int index = 0;
                     IList<bool> currentPermutation = (IList<bool>)myPermutationsEnumerator.Current;
