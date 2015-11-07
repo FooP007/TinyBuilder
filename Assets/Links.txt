@@ -1,0 +1,4 @@
+http://www.codeproject.com/Articles/21194/Iterative-vs-Recursive-Approaches
+http://stackoverflow.com/questions/11208446/generating-permutations-of-a-set-most-efficiently
+http://www.codeproject.com/Articles/26050/Permutations-Combinations-and-Variations-using-C-G
+https://www.youtube.com/watch?v=Lk6e4474W_M&list=PLLTAHuUj-zHh-naSM6JwN44dMvrsEeTuU&index=5

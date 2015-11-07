@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections;
 
+using Facet.Combinatorics;
+
 public class UnitTest : MonoBehaviour
 {
     public GameObject tinyBuilder;
@@ -566,54 +568,67 @@ public class UnitTest : MonoBehaviour
 
     public void StartUnitTest6()
     {
-        /*string result2 = "";
-        foreach (Project p2 in GetBuyAbleProjects())
-        {
-            if (p2 != null)
-            {
-                result2 += p2.projectName + " ";
-            }
-            else
-            {
-                result2 += "result ";
-            }
-        }
-        Debug.Log(result2);
-        */
-
-        
-        string[] output = GetPermutation(mainGame.maxDays, GetBuyAbleProjects());
+        List<Project> l = GetBuyAbleProjects();
+        Debug.Log("BuyAbleProjects: " + l.Count);
+        Variations <Project> variations = new Variations<Project>(l, 3, GenerateOption.WithRepetition);
+        int count = (int)variations.Count;
+        Debug.Log("count: " + count);
+        //Variations<int> variations = new Variations<int>(ints, cofs.Count);
+        /*string[] output = GetPermutationIterative(mainGame.maxDays, GetBuyAbleProjects());
 
         foreach (string Variation in output)
         {
             Debug.Log(Variation);
-        }
-
-        /*Debug.Log("output: " + output.Count);
-        foreach (List<Project> buildpath in output)
-        {
-            //Debug.Log("buildpath: "+buildpath.Count);
-            string result = "";
-            foreach (Project p in buildpath)
-            {
-                if(p != null)
-                {
-                    result += p.projectName + " ";
-                }
-                else
-                {
-                    result += "result ";
-                }
-            }
-            Debug.Log(result);
         }*/
+
+
     }
 
-    public string[] GetPermutation(int places, List<Project> projects)
+    private string[] GetPermutationIterative(int places, List<Project> projects)
+    {
+        ArrayList output = new ArrayList();
+        int count = 0;
+       
+        while (places != 0)
+        {
+            string outputPart = "";
+            if (projects.Count > 0)
+            {
+                foreach (Project p in projects)
+                {
+                    p.TryConstructing();
+                   
+                    mainGame.NextDay();
+                    outputPart += p.projectName + " ";
+                    projects = GetBuyAbleProjects();
+                }
+            }
+            else
+            {
+                //outputPart.Add(null);
+                outputPart += "empty ";
+                mainGame.NextDay();
+                projects = GetBuyAbleProjects();
+            }
+            output.Add(outputPart);
+            places--;
+        }
+
+        //GetPermutationPerRefIterative(places, projects, ref output, ref count);
+
+        return output.ToArray(typeof(string)) as string[];
+    }
+
+    private void GetPermutationPerRefIterative(int places, List<Project> projects, ref ArrayList output, ref int count, string outputPart = "")
+    {
+
+    }
+
+    public string[] GetPermutationRecursive(int places, List<Project> projects)
     {
         // Eine neue, leere ArrayList generieren, an die alle Möglichkeiten angehängt werden
         ArrayList output = new ArrayList();
-        List<Project> outputPart = new List<Project>();
+        
         int count = 0;
 
         GetPermutationPerRef(places, projects, ref output, ref count);
@@ -631,6 +646,7 @@ public class UnitTest : MonoBehaviour
     /// <param name="chars">Array von Zeichen die benutzt werden dürfen</param>
     /// <param name="output">ArrayList in die alle Möglichkeiten hinzugefügt werden</param>
     /// <param name="outputPart">Optionaler interner Parameter, zur Weitergabe der Informationen während des rekursiven Vorgangs</param>
+    /// 
     private void GetPermutationPerRef(int places, List<Project> projects, ref ArrayList output, ref int count, string outputPart = "")
     {
         //Debug.Log("places: " + places);
@@ -684,22 +700,21 @@ public class UnitTest : MonoBehaviour
                         projects,                       // Benötigte Variablen werden
                         ref output,                     // mitübergeben
                         ref count,                  
-                        outputPart + p.projectName);                 // An diesen letzen string werden alle anderen Stellen angehängt
+                        outputPart + p.projectName+" ");                 // An diesen letzen string werden alle anderen Stellen angehängt
                 }
             }
             else
             {
-                //outputPart.Add(null);
                 mainGame.NextDay();
                 projects = GetBuyAbleProjects();
 
                 // Danach wird für jedes dieser Zeichen, basierend auf der Anzahl der Stellen, wieder ein neuer
                 // foreach-Vorgang begonnen, der alle Zeichen der nächsten Stelle hinzufügt
-                GetPermutationPerRef(places - 1, // Die Stellen Anzahl wird verwindert, bis 0
-                    projects,                    // Benötigte Variablen werden
+                GetPermutationPerRef(places - 1,    // Die Stellen Anzahl wird verwindert, bis 0
+                    projects,                       // Benötigte Variablen werden
                     ref output,
-                    ref count,                 // mitübergeben
-                    outputPart + "empty");                 // An diesen letzen string werden alle anderen Stellen angehängt
+                    ref count,                      // mitübergeben
+                    outputPart + "empty ");          // An diesen letzen string werden alle anderen Stellen angehängt
             }
         }
     }

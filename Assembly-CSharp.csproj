@@ -48,6 +48,12 @@
      <Compile Include="Assets\Scripts\CloseButton.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
      <Compile Include="Assets\Scripts\Kombinatorik.cs" />
+     <Compile Include="Assets\Scripts\Kombinatorik\Combinations.cs" />
+     <Compile Include="Assets\Scripts\Kombinatorik\GenerateOption.cs" />
+     <Compile Include="Assets\Scripts\Kombinatorik\IMetaCollection.cs" />
+     <Compile Include="Assets\Scripts\Kombinatorik\Permutations.cs" />
+     <Compile Include="Assets\Scripts\Kombinatorik\SmallPrimeUtility.cs" />
+     <Compile Include="Assets\Scripts\Kombinatorik\Variations.cs" />
      <Compile Include="Assets\Scripts\Overseer.cs" />
      <Compile Include="Assets\Scripts\Projects\Bus.cs" />
      <Compile Include="Assets\Scripts\Projects\Carpool.cs" />
