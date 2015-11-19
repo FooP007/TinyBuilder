@@ -9,11 +9,11 @@ public class Project : MonoBehaviour
 	public Sprite[] projectSprites;
 	public Sprite[] placeholderSprites;
 
-	protected int[] costs = new int[1];
-	protected int[] capacities = new int[1];
-	protected int[] buildingRounds = new int[1];
-	protected int[] requiredPoints = new int[1];
-	protected int[] requiredWhitehouse = new int[1];
+	public static int[] costs = new int[1];
+    public static int[] capacities = new int[1];
+    public static int[] buildingRounds = new int[1];
+    public static int[] requiredPoints = new int[1];
+    public static int[] requiredWhitehouse = new int[1];
 
 	protected GameObject project;
 	protected string _projectName;
@@ -23,7 +23,7 @@ public class Project : MonoBehaviour
 	
 	protected bool _constructing = false;
 	protected int _constructionDays = 0;
-	protected int outOfRange = -1;
+	public static int outOfRange = -1;
 	protected float _offset = 1.1f;
 
     private GameObject upgradeWindow;
@@ -214,24 +214,23 @@ public class Project : MonoBehaviour
 
 	public void TryConstructing()
 	{
-		if(Rounds() != outOfRange)
+		if(Game.overseer.CanBuyProject(this, constructing))
 		{
-			if(Game.overseer.CanBuyProject(this, constructing))
-			{
-                Game.overseer.coins -= (Cost() - Game.overseer.discount);
-                StartConstructing();
-				CloseUpgradeWindow();
-			}
-            else
-            {
-                //Debug.Log("CanBuyProject = false!");
-            }
-		}
-		else
-		{
-			Debug.Log ("Project is at maximum upgrade!");
-		}
+            BuyProject();
+        }
+        else
+        {
+            Debug.Log("CanBuyProject = false! " + projectName+ " costs: "+ Cost() + " coins: "+ Game.overseer.coins);
+        }
 	}
+
+    public void BuyProject()
+    {
+        Game.overseer.coins -= (Cost() - Game.overseer.discount);
+        StartConstructing();
+        CloseUpgradeWindow();
+        //Debug.Log("bought: " + projectName);
+    }
 
 	protected void OnMouseDown()
 	{
@@ -369,11 +368,26 @@ public class Project : MonoBehaviour
 	 */
 	public void FillSpriteRenderer()
 	{
-		SpriteRenderer appearence = project.GetComponent<SpriteRenderer>();
-		appearence.sortingLayerName = "Buildings";
+        SpriteRenderer appearence = project.GetComponent<SpriteRenderer>();
+        if(appearence != null)
+        {
+            appearence.sortingLayerName = "Buildings";
+
+            // appearance of the project
+            if (projectLevel > 0 && projectLevel <= projectSprites.Length)
+            {
+                appearence.sprite = projectSprites[projectLevel - 1];
+            }
+            else
+            {
+                appearence.sprite = null;
+                //Debug.Log ("The given level was not in the expected range. Range :1 - " + projectSprites.Length +" but projectLevel was " + projectLevel + " project: " + project.name);
+            }
+        }
+		
 
         // placeholder
-		if(projectLevel >= 0 && projectLevel < placeholderSprites.Length)
+        if (projectLevel >= 0 && projectLevel < placeholderSprites.Length)
 		{
 			GetComponent<SpriteRenderer>().sprite = placeholderSprites[projectLevel];
 		}
@@ -382,16 +396,7 @@ public class Project : MonoBehaviour
 			//Debug.Log ("The given level was not in the expected range. Range :0 - " + placeholderSprites.Length +" but projectLevel was " + projectLevel);
 		}
 		
-        // appearance of the project
-		if(projectLevel > 0 && projectLevel <= projectSprites.Length)
-		{
-			appearence.sprite = projectSprites[projectLevel - 1];
-		}
-		else
-		{
-            appearence.sprite = null;
-            //Debug.Log ("The given level was not in the expected range. Range :1 - " + projectSprites.Length +" but projectLevel was " + projectLevel + " project: " + project.name);
-        }
+       
 		
 	}
 }

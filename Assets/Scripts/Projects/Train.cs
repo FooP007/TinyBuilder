@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Train : Project
 {
-
     private Station station;
 
     void Awake()
@@ -22,7 +21,6 @@ public class Train : Project
         buildingRounds      = new int[3] {  0,  0,  0 };
         capacities          = new int[3] { 20, 20, 20 };
         requiredWhitehouse  = new int[3] {  3,  4,  5 };
-       
     }
 
     void Start()

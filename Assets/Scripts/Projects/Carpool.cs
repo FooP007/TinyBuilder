@@ -10,19 +10,21 @@ public class Carpool : Project
 	void Awake()
 	{
 		project = GameObject.FindGameObjectWithTag("Carpool");
+        projectName = "Carpool";
 
-	}
+        upgradeWindowResource = "UpgradeWindowMirror";
+        offset = -1.2f;
+
+        clockText.text = "0";
+        capacities = new int[5] { 3, 9, 19, 34, 55 };
+        costs = new int[5] { 10, 20, 35, 55, 70 };
+        buildingRounds = new int[5] { 1, 2, 3, 4, 5 };
+        requiredWhitehouse = new int[5] { 1, 2, 3, 4, 5 };
+    }
 
 	void Start()
 	{
-		upgradeWindowResource = "UpgradeWindowMirror";
-		offset = -1.2f;
-		projectName = "Carpool";
-		clockText.text = "0";
-		capacities = new int[5] {3, 9, 19, 34, 55};
-		costs = new int[5] {10, 20, 35, 55, 70};
-		buildingRounds = new int[5] {1, 2, 3, 4, 5};
-		requiredWhitehouse = new int[5] {1, 2, 3, 4, 5};
+		
 
         UpdateText(projectLevel, new string[2] { " capacity", " envir pts" }, new int[2][] { capacities, extraPointsList }, "Street level: ", requiredWhitehouse);
         

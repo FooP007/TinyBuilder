@@ -10,12 +10,12 @@ public class CycleTrack : Project
 	{
 		project = GameObject.FindGameObjectWithTag("CycleTrack");
         dependence = GameObject.Find("PlaceholderWhitehouse").GetComponent<Whitehouse>();
-
+        projectName = "Cylcetrack";
     }
 	
 	void Start()
 	{
-		projectName = "Cylcetrack";
+		
 		clockText.text = "0";
 		capacities = new int[5] {1,3,7,14,25};
 		costs = new int[5] {15,20,30,45,65};

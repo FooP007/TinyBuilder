@@ -28,12 +28,12 @@ public class Overseer : MonoBehaviour
 
     private Overseer()
 	{
-		coinText = GameObject.FindGameObjectWithTag("Coin").GetComponent<TextMesh>();
-		pointText = GameObject.FindGameObjectWithTag("Point").GetComponent<TextMesh>();
+		coinText        = GameObject.FindGameObjectWithTag("Coin").GetComponent<TextMesh>();
+		pointText       = GameObject.FindGameObjectWithTag("Point").GetComponent<TextMesh>();
 		environmentText = GameObject.FindGameObjectWithTag("Environment").GetComponent<TextMesh>();
-		capacityText = GameObject.FindGameObjectWithTag("Capacity").GetComponent<TextMesh>();
-		citizenText = GameObject.FindGameObjectWithTag("Citizen").GetComponent<TextMesh>();
-		dayText = GameObject.FindGameObjectWithTag("Day").GetComponent<TextMesh>();
+		capacityText    = GameObject.FindGameObjectWithTag("Capacity").GetComponent<TextMesh>();
+		citizenText     = GameObject.FindGameObjectWithTag("Citizen").GetComponent<TextMesh>();
+		dayText         = GameObject.FindGameObjectWithTag("Day").GetComponent<TextMesh>();
 	}
 
 	public static Overseer Instance
@@ -63,31 +63,39 @@ public class Overseer : MonoBehaviour
 
     public bool CanBuyProject(Project project, bool constructing)
 	{
-		if(!constructing)
-		{
-			if(project.MetRequirements())
-			{
-				if(Solvent(project))
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
-				return false;
-			}
+        if(project.Rounds() != Project.outOfRange)
+        {
+            if (!constructing)
+            {
+                if (project.MetRequirements())
+                {
+                    if (Solvent(project))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
 
-		}
-		else
-		{
-			//Debug.Log ("You cant upgrade this project at the moment because it is still under construction!");
-			return false;
-		}
-	}
+            }
+            else
+            {
+                //Debug.Log ("You cant upgrade this project at the moment because it is still under construction!");
+                return false;
+            }
+        }
+        else
+        {
+            //Debug.Log("Project is at maximum upgrade!");
+            return false;
+        }
+    }
 
     public void BuilderUsed()
     {
@@ -98,7 +106,6 @@ public class Overseer : MonoBehaviour
             {
                 foreach (GameObject b in p.allBuilder)
                 {
-                   
                     DestroyObject(b);
                 }
 

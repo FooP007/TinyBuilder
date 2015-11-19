@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class Game : MonoBehaviour 
 {
 	public static Overseer overseer;
+    public Overseer _overseer;
 	public int startDay = 0;
     public int maxDays = 10;
 
@@ -17,12 +18,13 @@ public class Game : MonoBehaviour
     private bool gameOver = false;
 
 	// Use this for initialization
-	void Start () 
+	void Awake () 
 	{
         unitScript = UnitTest.GetComponent<UnitTest>();
         overseer = Overseer.Instance;
+        _overseer = overseer;
 
-		overseer.coins = 15;
+        overseer.coins = 15;
 		overseer.points = 0;
 		overseer.citizen = 5;
 		overseer.capacity = 5;
@@ -37,8 +39,8 @@ public class Game : MonoBehaviour
 			projects.Add(script);
 		}
 
-		buildTown();
-        unitScript.StartUnitTest6();
+        buildTown();
+       
     }
 
 	public void NextDay()
@@ -60,7 +62,6 @@ public class Game : MonoBehaviour
         {
             GameOver();
         }
-
     }
 
     void ShowBuilder()

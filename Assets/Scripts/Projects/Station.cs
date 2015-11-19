@@ -31,7 +31,7 @@ public class Station : Project
 
     public override bool MetRequirements()
     {
-       
+        //Debug.Log("dependence:" + dependence.projectLevel + " : Whitehouse " + Whitehouse());
         if (dependence.projectLevel >= Whitehouse())
         {
             return true;
