@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 
 public static class Kombinatorik
 {
@@ -12,11 +12,11 @@ public static class Kombinatorik
     public static string[] GetPermutation(int places, string[] chars)
     {
         // Eine neue, leere ArrayList generieren, an die alle Möglichkeiten angehängt werden
-        ArrayList output = new ArrayList();
-        GetPermutationPerRef(places, chars, ref output);
+        List<string> output = new List<string>();
+        GetPermutationPerRef(places, chars, output);
 
         // Das Ergebnis in einen string[] umwandeln und zurückgeben
-        return output.ToArray(typeof(string)) as string[];
+        return output.ToArray();
     }
 
     /// <summary>
@@ -28,7 +28,7 @@ public static class Kombinatorik
     /// <param name="chars">Array von Zeichen die benutzt werden dürfen</param>
     /// <param name="output">ArrayList in die alle Möglichkeiten hinzugefügt werden</param>
     /// <param name="outputPart">Optionaler interner Parameter, zur Weitergabe der Informationen während des rekursiven Vorgangs</param>
-    private static void GetPermutationPerRef(int places, string[] chars, ref ArrayList output, string outputPart = "")
+    private static void GetPermutationPerRef(int places, string[] chars, List<string> output, string outputPart = "")
     {
         if (places == 0)
         {
@@ -46,7 +46,7 @@ public static class Kombinatorik
 
                 GetPermutationPerRef(places - 1,   // Die Stellen Anzahl wird verwindert, bis 0
                     chars,                         // Benötigte Variablen werden
-                    ref output,                    // mitübergeben
+                    output,                    // mitübergeben
                     outputPart + c);               // An diesen letzen string werden alle anderen Stellen angehängt
             }
         }

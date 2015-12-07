@@ -7,8 +7,13 @@ using System.Collections;
 
 public class Whitehouse : Project 
 {
+    public static int[] Costs = new int[5] { 0, 10, 20, 30, 40 };
+    public static int[] Capacities = new int[1];
+    public static int[] BuildingRounds = new int[5] { 0, 2, 4, 6, 8 };
+    public static int[] RequiredPoints = new int[5] { 0, 20, 80, 200, 400 };
+    public static int[] RequiredWhitehouse = new int[1];
 
-	void Awake()
+    void Awake()
 	{
 		project = GameObject.FindGameObjectWithTag("Whitehouse");
 
@@ -18,9 +23,6 @@ public class Whitehouse : Project
         costs = new int[5] { 0, 10, 20, 30, 40 };
         buildingRounds = new int[5] { 0, 2, 4, 6, 8 };
         requiredPoints = new int[5] { 0, 20, 80, 200, 400 };
-
-       
-        
     }
 
     void Start()

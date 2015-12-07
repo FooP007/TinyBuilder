@@ -3,15 +3,16 @@ using System.Collections.Generic;
 
 public class BaseProject
 {
-    private BaseProject _dependence;
+    private BaseProject[] _dependence;
     private GameStats gameStats;
     public int projectLevel = 0;
 
-    private int[] _costs = new int[1];
-    private int[] _capacities = new int[1];
-    private int[] _buildingRounds = new int[1];
-    private int[] _requiredPoints = new int[1];
-    private int[] _requiredWhitehouse = new int[1];
+    private int[] _costs;
+    private int[] _capacities;
+    private int[] _buildingRounds;
+    private int[] _requiredPoints;
+    private int[] _requiredWhitehouse;
+    private int[] _extraPointsList;
 
     private int[] _discounts = new int[1];
     private int[] _builder = new int[1];
@@ -29,26 +30,43 @@ public class BaseProject
     public int allBuilder = 0;
 
     public BaseProject(int[] costs, int[] capacities, int[] buildingRounds, int[] requiredPoints, int[] requiredWhitehouse,
-        string projectName, GameStats stats, string pType, BaseProject dependence = null, int[] discounts = null, int[] builder = null, int newProjectLevel = 0)
+        string projectName, GameStats stats, string pType, BaseProject[] dependence = null, int[] extraPointsList = null, int[] discounts = null, int[] builder = null, int newProjectLevel = 0)
     {
-        int[] _costs                = costs;
-        int[] _capacities           = capacities;
-        int[] _buildingRounds       = buildingRounds;
-        int[] _requiredPoints       = requiredPoints;
-        int[] _requiredWhitehouse   = requiredWhitehouse;
-        int[] _builder              = builder;
-        int[] _discounts            = discounts;
+         _costs                = costs;
+         _capacities           = capacities;
+         _buildingRounds       = buildingRounds;
+         _requiredPoints       = requiredPoints;
+         _requiredWhitehouse   = requiredWhitehouse;
+
+        if(discounts != null)
+        {
+            _discounts = discounts;
+        }
+
+        if (builder != null)
+        {
+            _builder = builder;
+        }
+
+        if (extraPointsList != null)
+        {
+            _extraPointsList = extraPointsList;
+        }
+
 
         projectType = pType;
         gameStats = stats;
         _projectName = projectName;
         _dependence = dependence;
+            
         projectLevel = newProjectLevel;
+        
     }
 
     private void StartConstructing()
     {
         _constructionDays = Rounds();
+       
         if (_constructionDays >= 0)
         {
             _constructing = true;
@@ -70,10 +88,12 @@ public class BaseProject
         if (_constructing)
         {
             constructionDays--;
+            //Debug.Log("project: " + projectName);
             if (_constructionDays == 0)
             {
                 Upgrade();
                 projectLevel++;
+                
                 // remove all builder
                 allBuilder = 0;
                
@@ -83,21 +103,9 @@ public class BaseProject
         }
     }
 
-    public void Initiate()
+    private void Upgrade()
     {
-        int range = projectLevel;
-
-        for (int i = 0; i < range; i++)
-        {
-            projectLevel = i;
-            Upgrade();
-
-        }
-        projectLevel = range;
-    }
-
-    private  void Upgrade()
-    {
+        
         if (projectType == BaseProject.capacityProject)
         {
             gameStats.capacity += Capacity();
@@ -105,11 +113,19 @@ public class BaseProject
         else if(projectType == BaseProject.citizienProject)
         {
             gameStats.citizen += Capacity();
+            
         }
 
+        if(_extraPointsList != null)
+        {
+            //Debug.Log("EnvironmentPoints: "+EnvironmentPoints());
+            gameStats.environmentPoints += EnvironmentPoints();
+        }
+           
         if (Discount() != 0)
         {
             gameStats.discount = Discount();
+           
         }
 
         if (Builder() != 0)
@@ -125,27 +141,45 @@ public class BaseProject
     {
         if(_dependence == null)
         {
-            if (Game.overseer.points >= Points())
+            if (gameStats.points >= Points())
             {
                 return true;
             }
             else
             {
-                //Debug.Log ("Not enough points! Your points: " + Game.overseer.points +". Points needed: " + Points());
+                //Debug.Log ("Not enough points! Your points: " + gameStats.points +". Points needed: " + Points() +" Project:"+ projectName);
                 return false;
             }
         }
         else
         {
-            if (_dependence.projectLevel >= Whitehouse())
+            if(_dependence.Length > 1)
             {
-                return true;
+                if (_dependence[0].projectLevel >= Whitehouse() && _dependence[1].projectLevel >= _extraPointsList[0])
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
-                //Debug.Log ("Upgrade whitehouse first! whitehouse level:  " + dependence.projectLevel +". houses level: " + Whitehouse());
-                return false;
+                if (_dependence[0].projectLevel >= Whitehouse())
+                {
+                    return true;
+                }
+                else
+                {
+                    /*if (projectName == "Carpool")
+                    {
+                        Debug.Log("Upgrade "+ _dependence.projectName + " first!"+ _dependence.projectName +" level:  " + _dependence.projectLevel + ". " + projectName + " level: " + Whitehouse());
+                    }*/
+                    return false;
+                }
             }
+            
         }
     }
 
@@ -157,13 +191,13 @@ public class BaseProject
         }
         else
         {
-            Debug.Log("CanBuyProject = false! " + projectName + " costs: " + Cost() + " coins: " + Game.overseer.coins);
+            // Debug.Log("CanBuyProject = false! " + projectName + " costs: " + Cost()+ " coins: "+ gameStats.coins);
         }
     }
 
     public void BuyProject()
     {
-        Game.overseer.coins -= (Cost() - Game.overseer.discount);
+        gameStats.coins -= (Cost() - gameStats.discount);
         StartConstructing();
         //Debug.Log("bought: " + projectName);
     }
@@ -201,6 +235,11 @@ public class BaseProject
     public int Whitehouse()
     {
         return ArrayValue(_requiredWhitehouse);
+    }
+
+    public int EnvironmentPoints()
+    {
+        return ArrayValue(_extraPointsList);
     }
 
     /**

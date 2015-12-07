@@ -5,6 +5,12 @@ public class Bus : Project
 {
     private Station station;
 
+    public static int[] Costs = new int[3] { 20, 20, 20 };
+    public static int[] Capacities = new int[3] { 10, 10, 10 };
+    public static int[] BuildingRounds = new int[3] { 0, 0, 0 };
+    public static int[] RequiredPoints = new int[1];
+    public static int[] RequiredWhitehouse = new int[3] { 2, 3, 4 };
+
     void Awake()
     {
         project = GameObject.FindGameObjectWithTag("Bus");
@@ -17,10 +23,10 @@ public class Bus : Project
         projectName = "Bus";
         clockText.text = "0";
 
-        costs               = new int[3] { 20, 20, 20 };
-        buildingRounds      = new int[3] {  0,  0,  0 };
-        capacities          = new int[3] { 10, 10, 10 };
-        requiredWhitehouse  = new int[3] {  2,  3,  4 };
+        costs = new int[3] { 20, 20, 20 };
+        capacities = new int[3] { 10, 10, 10 };
+        buildingRounds = new int[3] { 0, 0, 0 };
+        requiredWhitehouse = new int[3] { 2, 3, 4 };
 
         UpdateText(projectLevel, new string[1] { "capacity" }, new int[1][] { capacities }, "Station level: ", new int[1] { 1 });
     }

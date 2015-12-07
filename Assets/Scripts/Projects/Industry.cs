@@ -4,8 +4,14 @@ using System.Collections.Generic;
 
 public class Industry : Project
 {
-    private int[] discounts = new int[5]    { 5, 0, 10, 0, 15 };
-    private int[] builders  = new int[5]    { 0, 1,  0, 2,  3 };
+    public static int[] discounts = new int[5]    { 5, 0, 10, 0, 15 };
+    public static int[] builders  = new int[5]    { 0, 1,  0, 2,  3 };
+
+    public static int[] Costs = new int[5] { 15, 25, 35, 45, 55 };
+    public static int[] Capacities = new int[1];
+    public static int[] BuildingRounds = new int[5] { 2, 4, 6, 8, 10 };
+    public static int[] RequiredPoints = new int[1];
+    public static int[] RequiredWhitehouse = new int[5] { 1, 2, 3, 4, 5 };
 
     void Awake()
     {
@@ -15,8 +21,8 @@ public class Industry : Project
         projectName = "Industry";
         clockText.text = "0";
 
-        capacities = new int[5] { 1, 3, 7, 14, 25 };
         costs = new int[5] { 15, 25, 35, 45, 55 };
+        capacities = new int[5] { 1, 3, 7, 14, 25 };
         buildingRounds = new int[5] { 2, 4, 6, 8, 10 };
         requiredWhitehouse = new int[5] { 1, 2, 3, 4, 5 };
     }

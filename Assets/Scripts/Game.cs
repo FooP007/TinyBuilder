@@ -4,9 +4,8 @@ using System.Collections.Generic;
 public class Game : MonoBehaviour 
 {
 	public static Overseer overseer;
-    public Overseer _overseer;
 	public int startDay = 0;
-    public int maxDays = 10;
+    private int maxDays = 30;
 
     public GameObject UnitTest;
     private UnitTest unitScript;
@@ -22,7 +21,6 @@ public class Game : MonoBehaviour
 	{
         unitScript = UnitTest.GetComponent<UnitTest>();
         overseer = Overseer.Instance;
-        _overseer = overseer;
 
         overseer.coins = 15;
 		overseer.points = 0;
@@ -60,6 +58,7 @@ public class Game : MonoBehaviour
 
         if (overseer.day == maxDays)
         {
+            Debug.Log("GameOvret");
             GameOver();
         }
     }
@@ -69,7 +68,6 @@ public class Game : MonoBehaviour
         // check if the player can use builder
         if (overseer.builder > 0)
         {
-
             foreach (Project p in projects)
             {
                 if (p.constructing)
@@ -97,9 +95,11 @@ public class Game : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		if(Input.GetKeyDown("space"))
+        
+        if (Input.GetKeyDown("space"))
 		{
 			spaceKeyDown = true;
+            //Debug.Log("pressed");
             GameObject[] allBuilder = GameObject.FindGameObjectsWithTag("Builder");
             if (allBuilder.Length == 0)
             {

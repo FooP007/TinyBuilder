@@ -9,12 +9,6 @@ public class Project : MonoBehaviour
 	public Sprite[] projectSprites;
 	public Sprite[] placeholderSprites;
 
-	public static int[] costs = new int[1];
-    public static int[] capacities = new int[1];
-    public static int[] buildingRounds = new int[1];
-    public static int[] requiredPoints = new int[1];
-    public static int[] requiredWhitehouse = new int[1];
-
 	protected GameObject project;
 	protected string _projectName;
     protected string _effectText;
@@ -30,6 +24,12 @@ public class Project : MonoBehaviour
     private UpgradeWindow uwScript;
     private GameObject builder;
     public List<GameObject> allBuilder = new List<GameObject>();
+
+    protected int[] costs;
+    protected int[] capacities;
+    protected int[] buildingRounds;
+    protected int[] requiredPoints;
+    protected int[] requiredWhitehouse;
 
     protected void StartConstructing()
 	{
@@ -218,10 +218,7 @@ public class Project : MonoBehaviour
 		{
             BuyProject();
         }
-        else
-        {
-            Debug.Log("CanBuyProject = false! " + projectName+ " costs: "+ Cost() + " coins: "+ Game.overseer.coins);
-        }
+        
 	}
 
     public void BuyProject()
@@ -368,6 +365,7 @@ public class Project : MonoBehaviour
 	 */
 	public void FillSpriteRenderer()
 	{
+        
         SpriteRenderer appearence = project.GetComponent<SpriteRenderer>();
         if(appearence != null)
         {

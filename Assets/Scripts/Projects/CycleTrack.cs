@@ -3,25 +3,31 @@ using System.Collections;
 
 public class CycleTrack : Project 
 {
-	private int[] extraPointsList = new int[5] {2,4,8,14,22};
-	//public Whitehouse whitehouse;
-	
-	void Awake()
+    public static int[] extraPointsList = new int[5] {2,4,8,14,22};
+    //public Whitehouse whitehouse;
+
+    public static int[] Costs = new int[5] { 15, 20, 30, 45, 65 };
+    public static int[] Capacities = new int[5] { 1, 3, 7, 14, 25 };
+    public static int[] BuildingRounds = new int[5] { 1, 2, 3, 4, 5 };
+    public static int[] RequiredPoints = new int[1];
+    public static int[] RequiredWhitehouse = new int[5] { 1, 2, 3, 4, 5 };
+
+    void Awake()
 	{
 		project = GameObject.FindGameObjectWithTag("CycleTrack");
         dependence = GameObject.Find("PlaceholderWhitehouse").GetComponent<Whitehouse>();
         projectName = "Cylcetrack";
+
+        clockText.text = "0";
+
+        costs = new int[5] { 15, 20, 30, 45, 65 };
+        capacities = new int[5] { 1, 3, 7, 14, 25 };
+        buildingRounds = new int[5] { 1, 2, 3, 4, 5 };
+        requiredWhitehouse = new int[5] { 1, 2, 3, 4, 5 };
     }
 	
 	void Start()
 	{
-		
-		clockText.text = "0";
-		capacities = new int[5] {1,3,7,14,25};
-		costs = new int[5] {15,20,30,45,65};
-		buildingRounds = new int[5] {1,2,3,4,5};
-		requiredWhitehouse = new int[5] {1,2,3,4,5};
-
         UpdateText(projectLevel, new string[2] { " capacity", " envir pts" }, new int[2][] { capacities, extraPointsList }, "Street level: ", requiredWhitehouse);
     }
 	

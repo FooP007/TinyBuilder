@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 public class Overseer : MonoBehaviour
 {
-   
     private GameObject upgradeWindow;
 
 	private static Overseer instance = null;

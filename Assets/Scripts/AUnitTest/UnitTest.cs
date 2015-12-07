@@ -13,7 +13,22 @@ public class UnitTest : MonoBehaviour
     private List<Project[]> buildPaths = new List<Project[]>();
     private Project[] buildPath;
     public Timer timer;
-    private int possibilities = 0;
+    private int maxDays = 20;
+
+    private int pointsBarrierer0 = 30;
+    private int pointsBarrierer1 = 80;
+    private int pointsBarrierer2 = 300;
+    private int pointsBarrierer3 = 500;
+
+    private int barrierer0 = 10;
+    private int barrierer1 = 15;
+    private int barrierer2 = 20;
+    private int barrierer3 = 25;
+
+    private string[] buildpathes;
+    private int index = 0;
+    private int maxIndex = -1;
+    private List<int> _allPoints;
 
     // Use this for initialization
     void Awake ()
@@ -25,207 +40,197 @@ public class UnitTest : MonoBehaviour
 
     void Start()
     {
-        //Debug.Log("dac: " + factorial(6, 1));
-        //Debug.Log("tail: " + tailRecursive(2));
-        // /*
-       float temp = Time.realtimeSinceStartup;
-       StartUnitTest();
-       Debug.Log("Time: " + (Time.realtimeSinceStartup - temp) + " sec");
-       // */
-    }
-
-    private bool HasFocus(List<Project> projects, Project focus)
-    {
-        foreach (Project p in projects)
-        {
-            if (p.projectName == focus.projectName)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Project GetFocusProject(List<Project> projects, Project focus)
-    {
-        foreach (Project p in projects)
-        {
-            if (p.projectName == focus.projectName)
-            {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    private Project GetRandomProject(List<Project> projects)
-    {
-        if(projects.Count >= 1)
-        {
-            int randomeIndex = Random.Range(0, projects.Count);
-            Project p;
-            //Debug.Log("randomeIndex: " + randomeIndex);
-            p = projects[randomeIndex];
-
-            return p;
-        }
-        return null;
+        /*
+        float temp = Time.realtimeSinceStartup;
+        string[] t = StartUnitTest();
         
-    }
-
-    private Project ChoseProject(Project focus)
-    {
-        Project curP = null;
-        List < Project > pros = GetBuyAbleProjects();
-
-        if (HasFocus(pros, focus))
-        {
-            curP = GetFocusProject(pros, focus);
-        }
-        else
-        {
-            curP = GetRandomProject(pros);
-        }
-
-        return curP;
-    }
-
-    private List<Project> GetBuyAbleProjects()
-    {
-        List<Project> bAprojects = new List<Project>(); // buyAblePorjects
-    
-        foreach (Project p in Game.projects)
-        {
-            // check if the project is buyable
-            if (Game.overseer.CanBuyProject(p, p.constructing))
-            {
-                bAprojects.Add(p);
-            }
-        }
-        return bAprojects;
-    }
-
-    private Project GetBuyAbleProject(int day)
-    {
-        foreach (Project p in Game.projects)
-        {
-            // check if the project was already bought at that day
-            if (Game.overseer.CanBuyProject(p, p.constructing))
-            {
-                buildPath[day] = p;
-                return p;
-            }
-        }
-        return null;
-    }
-
-    private void UseAvialableBuilder()
-    {
-        if (Game.overseer.builder > 0)
-        {
-            foreach (Project p in Game.projects)
-            {
-                if (p.allBuilder.Count > 0)
-                {
-                    p.UseBuilder();
-                }
-            }
-        }
-    }
-
-    public void StartUnitTestKombinatorik()
-    {
-        string[] projects = new string[9] { "Houses", "Street", "Industry", "Whitehouse", "Carpool", "Station", "Bus", "Train", "CycleTrack" };
-        string[] startProjects = new string[5] { " Houses", " Street", " Industry", " CycleTrack", " empty" };
-
-        // string[] result = Kombinatorik.GetPermutation(3, projects);
-
-        ArrayList output = new ArrayList();
-       
-        foreach (string Variation in output)
-        {
-            Debug.Log(Variation);
-        }
-    }
-
-    // day: 0 possibilities: { Street, Houses, CycleTrack, Industry } Chose: Street
-    // day: 1 possibilities: { }
-    // day: 2 possibilities: { Carpool, Houses } Chose: Carpool
-    // day: 3 possibilities: { }
-    // day: 4 possibilities: { Whitehouse, Houses } Chose: Whitehouse
-
-    private int factorial(int x, int fac)
-    {
-        if (x == 1)
-        {
-            Debug.Log("fac: " + fac);
-            return fac;
-        }
-        else
-        {
-            Debug.Log(x*fac);
-            return factorial(x - 1, x * fac);
-        } 
-    }
-
-    public int tailRecursive(int days)
-    {
+        Debug.Log("Time: " + (Time.realtimeSinceStartup - temp) + " sec");
+        Debug.Log("possibilities: " + t.Length);
+        */
+        float temp2 = Time.realtimeSinceStartup;
+        buildpathes = StartUnitTest();
+        Debug.Log("Fix Time: " + (Time.realtimeSinceStartup - temp2) + " sec");
+        Debug.Log("possibilities: " + buildpathes.Length);
+        Debug.Log("count of points: " + _allPoints.Count);
+        //maxIndex = buildpathes.Length - 1;
         
-        if (days <= 2)
+        int t = highestPoints();
+        Debug.Log("index: "+t);
+        Debug.Log(buildpathes[t]);
+        //Debug.Log("Time: " + (Time.realtimeSinceStartup - temp2) + " sec");
+        //FillQueue();
+    }
+
+    private int highestPoints()
+    {
+        int index = 0;
+        int maxPoints = 0;
+        for (int i = 0; i < _allPoints.Count; i++)
         {
+            if(_allPoints[i] > maxPoints)
+            {
+                maxPoints = _allPoints[i];
+                index = i;
+            }
+        }
+        Debug.Log("highscore: " + maxPoints);
+        return index;
+    }
+
+    private void FillQueue()
+    {
+        Queue<string> q = new Queue<string>();
+        foreach (string s in buildpathes)
+        {
+            q.Enqueue(s);
+        }
+    }
+
+    private void Update()
+    {
+        if(index <= maxIndex)
+        {
+            Debug.Log(buildpathes[index]);
             
-            return 1;
+            index++;
         }
-       
-        return tailRecursiveAux(days, 1, 1);
     }
 
-    private int tailRecursiveAux(int days, int iter, int acc)
-    {
-        if (iter == days)
-        {
-           
-            return acc;
-        }
-       
-        return tailRecursiveAux(days, ++iter, acc + iter);
-    }
-
-
-    public void StartUnitTest()
+    public string[] StartUnitTest()
     {
         GameStats game = new GameStats();
 
-        Debug.Log(game.coins);
         List<BaseProject> bplist = game.GetBuyAbleBaseProjects();
-        string[] output = GetPermutation(10, bplist, ref possibilities, game);
-        Debug.Log("possibilities: " + possibilities);
 
-        /*foreach (string Variation in output)
-        {
-            Debug.Log(Variation);
-        }
-        */
+        return GetPermutation(maxDays, bplist, game);
     }
 
-    private string printList(List<Project> list)
+    private LinkedListNode<Day> FindDay(int day, LinkedList<Day> linkedDays)
     {
-        string result = "";
-        foreach (Project p in list)
+        for (LinkedListNode<Day> d = linkedDays.First; d != null; d = d.Next)
         {
-            result += p.projectName + " ";
+            if(d.Value.day == day)
+            {
+                return d;
+            }
         }
-        return result;
+        return null;
     }
 
-    public string[] GetPermutation(int days, List<BaseProject> projects, ref int possibilities, GameStats game)
+    private void AddDaytoList(int day, GameStats game, LinkedList<Day> linkedDays)
+    {
+        Day d = new Day();
+       
+        d.coins = game.coins;
+        d.points = game.points;
+        d.citizen = game.citizen;
+        d.capacity = game.capacity;
+        d.environmentPoints = game.environmentPoints;
+
+        d.WhitehouseLvl = game.whitehouse.projectLevel;
+        d.CycletrackLvl = game.cycletrack.projectLevel;
+        d.HouseLvl = game.houses.projectLevel;
+        d.StreetLvl = game.street.projectLevel;
+        d.CarpooltLvl = game.carpool.projectLevel;
+        d.StationLvl = game.station.projectLevel;
+        d.BusLvl = game.bus.projectLevel;
+        d.TrainLvl = game.train.projectLevel;
+        d.IndustryLvl = game.industry.projectLevel;
+
+        Dictionary<string, int> newBpList = new Dictionary<string, int>();
+
+        foreach (BaseProject bp in game.baseProjects)
+        {
+            if(bp.constructing)
+            {
+                newBpList.Add(bp.projectName, bp.constructionDays);
+            }
+        }
+        d.constructProjects = newBpList;
+       
+        d.discount = game.discount;
+        d.maxBuilder = game.maxBuilder;
+
+        //d.dayStats = game;
+        d.day = day;
+        linkedDays.AddLast(d);
+    }
+
+    private void BrandNewDay(int day, LinkedListNode<Day> currentDay, GameStats game, LinkedList<Day> linkedDays)
+    {
+        if (currentDay != null)
+        {
+            // clears all constructions which whod have been build after the prevouise buildpath ended
+            game.ClearConstructing();
+            // sets the projectlevels of that day
+            game.whitehouse.projectLevel = currentDay.Value.WhitehouseLvl;
+            game.cycletrack.projectLevel = currentDay.Value.CycletrackLvl;
+            game.houses.projectLevel = currentDay.Value.HouseLvl;
+            game.street.projectLevel = currentDay.Value.StreetLvl;
+            game.carpool.projectLevel = currentDay.Value.CarpooltLvl;
+            game.station.projectLevel = currentDay.Value.StationLvl;
+            game.bus.projectLevel = currentDay.Value.BusLvl;
+            game.train.projectLevel = currentDay.Value.TrainLvl;
+            game.industry.projectLevel = currentDay.Value.IndustryLvl;
+
+            // sets the income of that day
+            game.coins = currentDay.Value.coins;
+            game.points = currentDay.Value.points;
+            game.citizen = currentDay.Value.citizen;
+            game.capacity = currentDay.Value.capacity;
+            game.environmentPoints = currentDay.Value.environmentPoints;
+
+            // sets the industry values of that day
+            game.maxBuilder = currentDay.Value.maxBuilder;
+            game.builder = game.maxBuilder;
+            game.discount = currentDay.Value.discount;
+
+            // sets the constructiondays of the constructing projects of that day       
+            for (int i = 0; i < currentDay.Value.constructProjects.Count; i++)
+            {
+                foreach (BaseProject gbp in game.baseProjects)
+                {
+                    if ( currentDay.Value.constructProjects.ContainsKey(gbp.projectName) )
+                    {
+                        gbp.constructing = true;
+                        gbp.constructionDays = currentDay.Value.constructProjects[gbp.projectName];
+                    }
+                }
+            }
+            
+            // clear all the new days ahead
+            while (currentDay != null)
+            {
+                var next = currentDay.Next;
+
+                linkedDays.Remove(currentDay);
+                currentDay = next;
+            }
+
+            // save the events of that day
+            AddDaytoList(day, game, linkedDays);
+        }
+        else
+        {
+            // save the events of that day
+            AddDaytoList(day, game, linkedDays);
+        }
+    }
+
+
+    public string[] GetPermutation(int days, List<BaseProject> projects, GameStats game)
     {
         // Eine neue, leere ArrayList generieren, an die alle Möglichkeiten angehängt werden
-        ArrayList output = new ArrayList();
-        
-        GetPermutationPerRef(days, projects, ref output, ref possibilities, game);
+        List<string> output = new List<string>();
+        List<int> allPoints = new List<int>();
+
+        LinkedList<Day> linkedDays = new LinkedList<Day>();
+
+        GetPermutationPerRef(days, projects, output, allPoints, game, linkedDays);
+
+        _allPoints = allPoints;
         // Das Ergebnis in einen string[] umwandeln und zurückgeben
-        return output.ToArray(typeof(string)) as string[];
+        return output.ToArray();
     }
 
     /// <summary>
@@ -237,67 +242,121 @@ public class UnitTest : MonoBehaviour
     /// <param name="chars">Array von Zeichen die benutzt werden dürfen</param>
     /// <param name="output">ArrayList in die alle Möglichkeiten hinzugefügt werden</param>
     /// <param name="outputPart">Optionaler interner Parameter, zur Weitergabe der Informationen während des rekursiven Vorgangs</param>
-    private void GetPermutationPerRef(int days, List<BaseProject> projects, ref ArrayList output, ref int possibilities, GameStats game, string outputPart = "")
+    private void GetPermutationPerRef(int days, List<BaseProject> projects, List<string> output, List<int> allPoints, GameStats game, LinkedList<Day> linkedDays, string outputPart = "")
     {
-        //Debug.Log("places: " + places);
-        //outputPart = new List<Project>();
-        Debug.Log("points: " + game.points); 
-        Debug.Log(outputPart);
         //Debug.Log("coins:" + game.overseer .coins + " points: " + stats.points + " builder: "+ stats.builder);
         if (days == 0)
         {
             // Wenn die Anzahl der Stellen durchgerechnet wurde,
             // wird der sich ergebende string (Element) an die Ausgabe angehängt.
-            outputPart += " points: " ; 
+            //Debug.Log("_--------------------------_");
+            allPoints.Add(game.points);
             output.Add(outputPart);
-            // add 1 to the amount of possible buildpathes
-            possibilities++;
-            // reset all values for the next buildpath
-            //mainGame.GameReset();
-            Debug.Log("next buildpath");
         }
         else
         {
-            if(projects.Count > 0)
+            if (projects.Count > 0)
             {
                 // Für die Stelle rechts im Element, werden alle Zeichenmöglichkeiten durchlaufen
                 foreach (BaseProject p in projects)
                 {
-                    // construct the current project
-                    game.BuyProject(p);
-                    //p.TryConstructing();
-                    // use all available builder
-                    //UseAvialableBuilder();
-                    // move on to the next day
-                    //mainGame.NextDay();
-                    // find all the projects the player could buy the next day
-                    projects = game.GetBuyAbleBaseProjects();
+                    if(days == maxDays)
+                    {
+                        game.Reset();
+                        linkedDays.Clear();
+                    }
+                    //Debug.Log("before coins: " + game.coins);
+                    // check if the day already exists
+                    LinkedListNode<Day> currentDay = FindDay(days, linkedDays);
+                    BrandNewDay(days, currentDay, game, linkedDays);
 
-                    // Danach wird für jedes dieser Zeichen, basierend auf der Anzahl der Stellen, wieder ein neuer
-                    // foreach-Vorgang begonnen, der alle Zeichen der nächsten Stelle hinzufügt
-                    GetPermutationPerRef(days - 1,          // Die Stellen Anzahl wird verwindert, bis 0
-                        projects,                            // Benötigte Variablen werden
-                        ref output,                          // mitübergeben
-                        ref possibilities,
-                        game,                  
-                        outputPart + p.projectName +" "/* " day "+days+" "" coins: " + money + " : "+ p.Cost()+ " paid "*/);    // An diesen letzen string werden alle anderen Stellen angehängt
+                    if (days == (maxDays - barrierer0) && game.points <= pointsBarrierer0)
+                    {
+                        // ende
+                    }
+                    else if(days == (maxDays - barrierer1) && game.points <= pointsBarrierer1)
+                    {
+                        // ende
+                        //Debug.Log("points: "+ game.points+" : "+barrierer);
+                    }
+                    else if (days == (maxDays - barrierer2) && game.points <= pointsBarrierer2)
+                    {
+                        // ende
+                    }
+                    else if (days == (maxDays - barrierer3) && game.points <= pointsBarrierer3)
+                    {
+                        // ende
+                    }
+                    else
+                    {
+                        // construct the current project
+                        game.BuyProject(p);
+                        
+                        // move on to the next day
+                        game.nextDay();
+                       
+                        // find all the projects the player could buy the next day
+                        projects = game.GetBuyAbleBaseProjects();
+
+                        GetPermutationPerRef(days - 1,
+                            projects,
+                            output,
+                            allPoints,
+                            game,
+                            linkedDays,
+                            outputPart + p.projectName + " ");
+                    }
                 }
             }
             else
             {
-                // dont buy or upgrade any project
-                //Debug.Log("empty ");
-                //UseAvialableBuilder();
-                //mainGame.NextDay();
-                projects = game.GetBuyAbleBaseProjects();
+                if (days == maxDays)
+                {
+                    game.Reset();
+                    linkedDays.Clear();
+                }
 
-                GetPermutationPerRef(days - 1,
-                    projects,
-                    ref output,
-                    ref possibilities,
-                    game,
-                    outputPart + "empty "/*day " + days + " "*/);
+                if (days == (maxDays - 10) && game.points <= barrierer0)
+                {
+                    // ende
+                }
+                else if (days == (maxDays - 15) && game.points <= barrierer1)
+                {
+                    // ende
+                    //Debug.Log("points: "+ game.points+" : "+barrierer);
+                }
+                else if (days == (maxDays - 20) && game.points <= barrierer2)
+                {
+                    // ende
+                }
+                else if (days == (maxDays - 25) && game.points <= barrierer3)
+                {
+                    // ende
+                }
+                else
+                {
+                    // check if the day already exists
+                    LinkedListNode<Day> currentDay = FindDay(days, linkedDays);
+                    BrandNewDay(days, currentDay, game, linkedDays);
+
+                    // dont buy or upgrade any project
+                    
+                    game.nextDay();
+                   
+                    projects = game.GetBuyAbleBaseProjects();
+
+                    GetPermutationPerRef(days - 1,
+                        projects,
+                        output,
+                        allPoints,
+                        game,
+                        linkedDays,
+                        outputPart + "empty ");
+                }
+
+               
             }
         }
     }
+    
 }

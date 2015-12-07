@@ -3,6 +3,11 @@ using System.Collections;
 
 public class Station : Project
 {
+    public static int[] Costs = new int[2] { 20, 50 };
+    public static int[] Capacities = new int[1];
+    public static int[] BuildingRounds = new int[2] { 2, 8 };
+    public static int[] RequiredPoints = new int[1];
+    public static int[] RequiredWhitehouse = new int[2] { 2, 3 };
 
     void Awake()
     {
@@ -15,9 +20,9 @@ public class Station : Project
         projectName = "Station";
         clockText.text = "0";
 
-        costs               = new int[2] { 20, 50 };
-        buildingRounds      = new int[2] {  2,  8 };
-        requiredWhitehouse  = new int[2] {  2,  3 };
+        costs = new int[2] { 20, 50 };
+        buildingRounds = new int[2] { 2, 8 };
+        requiredWhitehouse = new int[2] { 2, 3 };
 
         UpdateText(projectLevel, new string[1] { "Station level " }, new int[1][] { new int[1] { projectLevel + 1 } }, "Whitehouse level: ", requiredWhitehouse, false);
 
