@@ -16,8 +16,12 @@ public class Game : MonoBehaviour
 	private bool spaceKeyDown = false;
     private bool gameOver = false;
 
-	// Use this for initialization
-	void Awake () 
+    private bool startQueue = false;
+    private float queueTime = 0;
+    private int queueInterval = 2;
+
+    // Use this for initialization
+    void Awake () 
 	{
         unitScript = UnitTest.GetComponent<UnitTest>();
         overseer = Overseer.Instance;
@@ -38,7 +42,11 @@ public class Game : MonoBehaviour
 		}
 
         buildTown();
-       
+    }
+
+    public void StartJobqueue()
+    {
+        startQueue = true;
     }
 
 	public void NextDay()
@@ -47,6 +55,7 @@ public class Game : MonoBehaviour
         {
             ShowBuilder();
             overseer.day++;
+            Debug.Log("Day:"+ overseer.day);
             overseer.Income();
             overseer.builder = overseer.maxBuilder;
 
@@ -58,8 +67,37 @@ public class Game : MonoBehaviour
 
         if (overseer.day == maxDays)
         {
-            Debug.Log("GameOvret");
+            Debug.Log("GameOver!");
             GameOver();
+        }
+    }
+
+    private Project GetProjectByString(string targetProject)
+    {
+        foreach(Project p in projects)
+        {
+            if(p.projectName == targetProject)
+            {
+                return p;
+            }
+        }
+        return null;
+    } 
+
+    void UseAllBuilder()
+    {
+        foreach(Project p in projects)
+        {
+            if (overseer.builder > 0)
+            {
+                if (p.allBuilder.Count > 0)
+                {
+                    for (int i = 0; i < p.allBuilder.Count; i++)
+                    {
+                        p.UseBuilder(); 
+                    }
+                }
+            }
         }
     }
 
@@ -95,7 +133,42 @@ public class Game : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-        
+        if(startQueue)
+        {
+            if (queueTime <= 0 && unitScript.jobqueue.Count > 0)
+            {
+                queueTime = queueInterval;
+               
+                string targetString = unitScript.jobqueue.Dequeue();
+                
+                Project targetProject = GetProjectByString(targetString);
+                if(targetProject != null)
+                {
+                    targetProject.BuyProject();
+                }
+
+                GameObject[] allBuilder = GameObject.FindGameObjectsWithTag("Builder");
+
+                UseAllBuilder();
+
+                if (allBuilder.Length == 0)
+                {
+                    NextDay();
+                }
+                else
+                {
+                    Debug.Log("allBuilder: "+allBuilder.Length);
+                }
+            }
+            else if(unitScript.jobqueue.Count <= 0)
+            {
+                Debug.Log("startQueue");
+                startQueue = false;
+            }
+
+            queueTime -= 1 * Time.deltaTime;
+        }
+
         if (Input.GetKeyDown("space"))
 		{
 			spaceKeyDown = true;

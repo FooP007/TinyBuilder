@@ -205,18 +205,7 @@ public class GameStats
 
     public void BuyProject(BaseProject p)
     {
-        int i = baseProjects.Count-1;
-        while (i >= 0)
-        {
-            if (baseProjects[i].projectName == p.projectName)
-            {
-                //coins -= (baseProjects[i].Cost() - discount);
-                baseProjects[i].TryConstructing();
-                //baseProjects[i].BuyProject();
-            }
-            i--;
-        }
-
+        p.BuyProject();
     }
 
     public void Income()
@@ -250,7 +239,6 @@ public class GameStats
 
         foreach (BaseProject bp in baseProjects)
         {
-            //Debug.Log(bp.projectName);
             if (CanBuyBaseProject(bp))
             {
                 reList.Add(bp);

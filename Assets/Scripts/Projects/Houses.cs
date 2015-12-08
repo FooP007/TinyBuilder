@@ -9,6 +9,7 @@ public class Houses : Project
     public static int[] BuildingRounds = new int[10] { 2, 2, 3, 3, 4, 4, 5, 5, 6, 6 };
     public static int[] RequiredPoints = new int[1];
     public static int[] RequiredWhitehouse = new int[10] { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5 };
+    
 
     void Awake()
 	{

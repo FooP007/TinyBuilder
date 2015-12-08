@@ -93,11 +93,12 @@ public class Project : MonoBehaviour
         allBuilder.Remove(builder);
         DestroyObject(builder);
         Construct();
+
         Game.overseer.BuilderUsed();
+
         if (allBuilder.Count >= 1)
         {
             builder = allBuilder[allBuilder.Count - 1];
-
         }
     }
 
@@ -283,7 +284,13 @@ public class Project : MonoBehaviour
 		set{ _offset = value; }
 	}
 
-	public string upgradeWindowResource
+    public string projectName
+    {
+        get { return _projectName; }
+        set { _projectName = value; }
+    }
+
+    public string upgradeWindowResource
 	{
 		get{ return _upgradeWindowResource; }
 		set{ _upgradeWindowResource = value; }
@@ -299,12 +306,6 @@ public class Project : MonoBehaviour
 	{
 		get{ return _effectText; }
 		set{ _effectText = value; }
-	}
-
-	public string projectName
-	{
-		get{ return _projectName; }
-		set{ _projectName = value; }
 	}
 
 	public int Whitehouse()

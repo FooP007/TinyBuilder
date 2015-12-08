@@ -10,8 +10,6 @@ public class UnitTest : MonoBehaviour
     private Game mainGame;
     private Variations<Project> variations;
 
-    private List<Project[]> buildPaths = new List<Project[]>();
-    private Project[] buildPath;
     public Timer timer;
     private int maxDays = 20;
 
@@ -25,6 +23,7 @@ public class UnitTest : MonoBehaviour
     private int barrierer2 = 20;
     private int barrierer3 = 25;
 
+    public Queue<string> jobqueue;
     private string[] buildpathes;
     private int index = 0;
     private int maxIndex = -1;
@@ -34,31 +33,24 @@ public class UnitTest : MonoBehaviour
     void Awake ()
     {
         mainGame = tinyBuilder.GetComponent<Game>();
-        //buildPath = new Project[mainGame.maxDays];
-        buildPaths.Add(buildPath);
-    }
-
-    void Start()
-    {
-        /*
-        float temp = Time.realtimeSinceStartup;
-        string[] t = StartUnitTest();
         
-        Debug.Log("Time: " + (Time.realtimeSinceStartup - temp) + " sec");
-        Debug.Log("possibilities: " + t.Length);
-        */
-        float temp2 = Time.realtimeSinceStartup;
+        
+        float temp = Time.realtimeSinceStartup;
+        
         buildpathes = StartUnitTest();
-        Debug.Log("Fix Time: " + (Time.realtimeSinceStartup - temp2) + " sec");
+        Debug.Log("Fix Time: " + (Time.realtimeSinceStartup - temp) + " sec");
         Debug.Log("possibilities: " + buildpathes.Length);
         Debug.Log("count of points: " + _allPoints.Count);
-        //maxIndex = buildpathes.Length - 1;
-        
+        maxIndex = buildpathes.Length - 1;
+
         int t = highestPoints();
-        Debug.Log("index: "+t);
-        Debug.Log(buildpathes[t]);
-        //Debug.Log("Time: " + (Time.realtimeSinceStartup - temp2) + " sec");
-        //FillQueue();
+        Debug.Log("index: " + t);
+        Debug.Log("materpath: "+buildpathes[t]);
+        /*
+        jobqueue = FillQueue(buildpathes[t]);
+
+        mainGame.StartJobqueue();
+        */
     }
 
     private int highestPoints()
@@ -77,13 +69,21 @@ public class UnitTest : MonoBehaviour
         return index;
     }
 
-    private void FillQueue()
+    private Queue<string> FillQueue(string bestBuildPath)
     {
         Queue<string> q = new Queue<string>();
-        foreach (string s in buildpathes)
+        int index = 0;
+        string parts = bestBuildPath;
+
+        for (int i = 0; i < maxDays; i++)
         {
-            q.Enqueue(s);
+            string part = parts.Substring (index, parts.IndexOf(" "));
+            parts = parts.Remove(index, parts.IndexOf(" ") + 1);
+           
+            q.Enqueue(part);
         }
+       
+        return q;
     }
 
     private void Update()
@@ -220,7 +220,6 @@ public class UnitTest : MonoBehaviour
 
     public string[] GetPermutation(int days, List<BaseProject> projects, GameStats game)
     {
-        // Eine neue, leere ArrayList generieren, an die alle Möglichkeiten angehängt werden
         List<string> output = new List<string>();
         List<int> allPoints = new List<int>();
 
@@ -229,7 +228,7 @@ public class UnitTest : MonoBehaviour
         GetPermutationPerRef(days, projects, output, allPoints, game, linkedDays);
 
         _allPoints = allPoints;
-        // Das Ergebnis in einen string[] umwandeln und zurückgeben
+        
         return output.ToArray();
     }
 
@@ -238,54 +237,60 @@ public class UnitTest : MonoBehaviour
     /// Das Array beinhaltet alle möglichen Verknüpfungsmöglichkeiten, die durch Permutation ermittelt werden.
     /// Das Ergebnis wird in der als Referenz übergebenen ArrayList 'output' gespeichert.
     /// </summary>
-    /// <param name="places">Anzahl der Stellen jedes Elements</param>
-    /// <param name="chars">Array von Zeichen die benutzt werden dürfen</param>
-    /// <param name="output">ArrayList in die alle Möglichkeiten hinzugefügt werden</param>
-    /// <param name="outputPart">Optionaler interner Parameter, zur Weitergabe der Informationen während des rekursiven Vorgangs</param>
+    /// <param name="days">Count of how many days the player would have time to build</param>
+    /// <param name="projects">List of the available projects</param>
+    /// <param name="output">List in which all the buildpathes will be stored</param>
+    /// <param name="allPoints">List in which all the points of each buildpath will be stored</param>
+    /// <param name="game">Game holds all the values to provide a environment where project can be build</param>
+    /// <param name="outputPart" >Internally parameter to pass on the information during the recursiv progress</param>
     private void GetPermutationPerRef(int days, List<BaseProject> projects, List<string> output, List<int> allPoints, GameStats game, LinkedList<Day> linkedDays, string outputPart = "")
     {
         //Debug.Log("coins:" + game.overseer .coins + " points: " + stats.points + " builder: "+ stats.builder);
         if (days == 0)
         {
-            // Wenn die Anzahl der Stellen durchgerechnet wurde,
-            // wird der sich ergebende string (Element) an die Ausgabe angehängt.
-            //Debug.Log("_--------------------------_");
+            // If all the days are through,
+            // the buildpath is added to a List of buildpathes
+            // and the score of that buildpath is added to the scorelist
             allPoints.Add(game.points);
             output.Add(outputPart);
         }
         else
         {
-            if (projects.Count > 0)
+            if (projects.Count > 0) // there are projects which can be build
             {
-                // Für die Stelle rechts im Element, werden alle Zeichenmöglichkeiten durchlaufen
+                // for each new baseproject there is a complete new buildpath
                 foreach (BaseProject p in projects)
                 {
-                    if(days == maxDays)
+                    // because the days are getting counted down every new buildpath starts with the maximum count of days
+                    // the game environment gets reset as do the linkedlist of days
+                    if (days == maxDays)
                     {
                         game.Reset();
                         linkedDays.Clear();
                     }
-                    //Debug.Log("before coins: " + game.coins);
+                    
                     // check if the day already exists
                     LinkedListNode<Day> currentDay = FindDay(days, linkedDays);
+
                     BrandNewDay(days, currentDay, game, linkedDays);
 
+                    // the barriers prevent not promising buildpathes from being furhter pursued
+                    // so that the numbers of possible buildpathes dont get out of hand
                     if (days == (maxDays - barrierer0) && game.points <= pointsBarrierer0)
                     {
-                        // ende
+                        // end of tail recursion
                     }
                     else if(days == (maxDays - barrierer1) && game.points <= pointsBarrierer1)
                     {
-                        // ende
-                        //Debug.Log("points: "+ game.points+" : "+barrierer);
+                        // end of tail recursion
                     }
                     else if (days == (maxDays - barrierer2) && game.points <= pointsBarrierer2)
                     {
-                        // ende
+                        // end of tail recursion
                     }
                     else if (days == (maxDays - barrierer3) && game.points <= pointsBarrierer3)
                     {
-                        // ende
+                        // end of tail recursion
                     }
                     else
                     {
@@ -298,17 +303,12 @@ public class UnitTest : MonoBehaviour
                         // find all the projects the player could buy the next day
                         projects = game.GetBuyAbleBaseProjects();
 
-                        GetPermutationPerRef(days - 1,
-                            projects,
-                            output,
-                            allPoints,
-                            game,
-                            linkedDays,
-                            outputPart + p.projectName + " ");
+                        // tail recursion
+                        GetPermutationPerRef(days - 1, projects, output, allPoints, game, linkedDays, outputPart + p.projectName + " ");
                     }
                 }
             }
-            else
+            else // there are no projects which can be build
             {
                 if (days == maxDays)
                 {
@@ -316,20 +316,19 @@ public class UnitTest : MonoBehaviour
                     linkedDays.Clear();
                 }
 
-                if (days == (maxDays - 10) && game.points <= barrierer0)
+                if (days == (maxDays - barrierer0) && game.points <= pointsBarrierer0)
                 {
                     // ende
                 }
-                else if (days == (maxDays - 15) && game.points <= barrierer1)
-                {
-                    // ende
-                    //Debug.Log("points: "+ game.points+" : "+barrierer);
-                }
-                else if (days == (maxDays - 20) && game.points <= barrierer2)
+                else if (days == (maxDays - barrierer1) && game.points <= pointsBarrierer1)
                 {
                     // ende
                 }
-                else if (days == (maxDays - 25) && game.points <= barrierer3)
+                else if (days == (maxDays - barrierer2) && game.points <= pointsBarrierer2)
+                {
+                    // ende
+                }
+                else if (days == (maxDays - barrierer3) && game.points <= pointsBarrierer3)
                 {
                     // ende
                 }
@@ -353,10 +352,7 @@ public class UnitTest : MonoBehaviour
                         linkedDays,
                         outputPart + "empty ");
                 }
-
-               
             }
         }
     }
-    
 }
