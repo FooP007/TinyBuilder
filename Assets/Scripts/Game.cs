@@ -54,8 +54,10 @@ public class Game : MonoBehaviour
         if(!gameOver)
         {
             ShowBuilder();
+            UseAllBuilder();
+        
             overseer.day++;
-            Debug.Log("Day:"+ overseer.day);
+           
             overseer.Income();
             overseer.builder = overseer.maxBuilder;
 
@@ -76,8 +78,9 @@ public class Game : MonoBehaviour
     {
         foreach(Project p in projects)
         {
-            if(p.projectName == targetProject)
+            if (p.projectName == targetProject)
             {
+               
                 return p;
             }
         }
@@ -94,7 +97,7 @@ public class Game : MonoBehaviour
                 {
                     for (int i = 0; i < p.allBuilder.Count; i++)
                     {
-                        p.UseBuilder(); 
+                        p.UseBuilder();
                     }
                 }
             }
@@ -135,12 +138,12 @@ public class Game : MonoBehaviour
 	{
         if(startQueue)
         {
-            if (queueTime <= 0 && unitScript.jobqueue.Count > 0)
+            if (queueTime <= 0 && unitScript.jobqueue.Count > 0 || Input.GetKeyDown("space"))
             {
                 queueTime = queueInterval;
                
                 string targetString = unitScript.jobqueue.Dequeue();
-                
+                Debug.Log("targetString: "+ targetString);
                 Project targetProject = GetProjectByString(targetString);
                 if(targetProject != null)
                 {
@@ -149,7 +152,7 @@ public class Game : MonoBehaviour
 
                 GameObject[] allBuilder = GameObject.FindGameObjectsWithTag("Builder");
 
-                UseAllBuilder();
+                //UseAllBuilder();
 
                 if (allBuilder.Length == 0)
                 {
@@ -159,6 +162,26 @@ public class Game : MonoBehaviour
                 {
                     Debug.Log("allBuilder: "+allBuilder.Length);
                 }
+
+               
+                if (targetProject != null)
+                {
+                    int startCoins = overseer.coins + targetProject.Cost() - overseer.citizen;
+                    int spend = targetProject.Cost();
+                    int afterSpendCoins = overseer.coins - overseer.citizen;
+
+                    Debug.Log("Day:" + overseer.day + " project: " + targetString + " start coins: " + startCoins + " discount: " + overseer.discount +
+                        " spend: " + spend + " Coins after project: " + afterSpendCoins + " Income: "+ overseer.citizen  + " new coins: " + overseer.coins);
+                }
+                else
+                {
+                    int startCoins = overseer.coins - overseer.citizen;
+                    int spend = 0;
+                    int afterSpendCoins = overseer.coins - overseer.citizen;
+                    Debug.Log("Day:" + overseer.day + " project: " + targetString + " start coins: " + startCoins + " discount: " + overseer.discount +
+                        " spend: " + spend + " Coins after project: " + afterSpendCoins + " Income: " + overseer.citizen + " new coins: " + overseer.coins);
+                }
+                
             }
             else if(unitScript.jobqueue.Count <= 0)
             {

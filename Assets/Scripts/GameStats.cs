@@ -49,6 +49,7 @@ public class GameStats
         capacity = 5;
         environmentPoints = 0;
         maxBuilder = 0;
+        builder = 0;
         day = 0;
         discount = 0;
 
@@ -81,7 +82,7 @@ public class GameStats
         whitehouse = new BaseProject(Whitehouse.Costs, Whitehouse.Capacities, Whitehouse.BuildingRounds, Whitehouse.RequiredPoints, Whitehouse.RequiredWhitehouse, "Whitehouse", this, BaseProject.citizienProject, null, null, null, null, 1);
         baseProjects.Add(whitehouse);
 
-        houses = new BaseProject(Houses.Costs, Houses.Capacities, Houses.BuildingRounds, Houses.RequiredPoints, Houses.RequiredWhitehouse, "House", this, BaseProject.citizienProject, new BaseProject[] { whitehouse });
+        houses = new BaseProject(Houses.Costs, Houses.Capacities, Houses.BuildingRounds, Houses.RequiredPoints, Houses.RequiredWhitehouse, Houses.staticProjectName, this, BaseProject.citizienProject, new BaseProject[] { whitehouse });
         baseProjects.Add(houses);
 
         street = new BaseProject(Street.Costs, Street.Capacities, Street.BuildingRounds, Street.RequiredPoints, Street.RequiredWhitehouse, "Street", this, BaseProject.capacityProject, new BaseProject[] { whitehouse });
@@ -90,7 +91,7 @@ public class GameStats
         carpool = new BaseProject(Carpool.Costs, Carpool.Capacities, Carpool.BuildingRounds, Carpool.RequiredPoints, Carpool.RequiredWhitehouse, "Carpool", this, BaseProject.capacityProject, new BaseProject[] { street }, Carpool.extraPointsList);
         baseProjects.Add(carpool);
 
-        cycletrack = new BaseProject(CycleTrack.Costs, CycleTrack.Capacities, CycleTrack.BuildingRounds, CycleTrack.RequiredPoints, CycleTrack.RequiredWhitehouse, "Cycletrack", this, BaseProject.capacityProject, new BaseProject[] { whitehouse }, CycleTrack.extraPointsList);
+        cycletrack = new BaseProject(CycleTrack.Costs, CycleTrack.Capacities, CycleTrack.BuildingRounds, CycleTrack.RequiredPoints, CycleTrack.RequiredWhitehouse, CycleTrack.staticProjectName, this, BaseProject.capacityProject, new BaseProject[] { whitehouse }, CycleTrack.extraPointsList);
         baseProjects.Add(cycletrack);
 
         industry = new BaseProject(Industry.Costs, Industry.Capacities, Industry.BuildingRounds, Industry.RequiredPoints, Industry.RequiredWhitehouse, "Industry", this, BaseProject.capacityProject, new BaseProject[] { whitehouse }, null, Industry.discounts, Industry.builders);

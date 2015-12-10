@@ -28,6 +28,7 @@ public class Day
 
     public int discount { get; set; }
     public int maxBuilder { get; set; }
+    public int builder { get; set; }
 
     public Dictionary<string, int> constructProjects { get; set; }
 

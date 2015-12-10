@@ -41,16 +41,15 @@ public class UnitTest : MonoBehaviour
         Debug.Log("Fix Time: " + (Time.realtimeSinceStartup - temp) + " sec");
         Debug.Log("possibilities: " + buildpathes.Length);
         Debug.Log("count of points: " + _allPoints.Count);
-        maxIndex = buildpathes.Length - 1;
+        //maxIndex = buildpathes.Length - 1;
 
         int t = highestPoints();
         Debug.Log("index: " + t);
-        Debug.Log("materpath: "+buildpathes[t]);
-        /*
+        Debug.Log("materpath: " + buildpathes[t]);
+        
         jobqueue = FillQueue(buildpathes[t]);
 
         mainGame.StartJobqueue();
-        */
     }
 
     private int highestPoints()
@@ -90,7 +89,9 @@ public class UnitTest : MonoBehaviour
     {
         if(index <= maxIndex)
         {
+            
             Debug.Log(buildpathes[index]);
+            
             
             index++;
         }
@@ -150,9 +151,10 @@ public class UnitTest : MonoBehaviour
        
         d.discount = game.discount;
         d.maxBuilder = game.maxBuilder;
+        d.builder = game.builder;
 
-        //d.dayStats = game;
-        d.day = day;
+    //d.dayStats = game;
+    d.day = day;
         linkedDays.AddLast(d);
     }
 
@@ -182,7 +184,7 @@ public class UnitTest : MonoBehaviour
 
             // sets the industry values of that day
             game.maxBuilder = currentDay.Value.maxBuilder;
-            game.builder = game.maxBuilder;
+            game.builder = currentDay.Value.builder;
             game.discount = currentDay.Value.discount;
 
             // sets the constructiondays of the constructing projects of that day       
@@ -268,12 +270,11 @@ public class UnitTest : MonoBehaviour
                         game.Reset();
                         linkedDays.Clear();
                     }
-                    
                     // check if the day already exists
                     LinkedListNode<Day> currentDay = FindDay(days, linkedDays);
-
+                    
                     BrandNewDay(days, currentDay, game, linkedDays);
-
+                   
                     // the barriers prevent not promising buildpathes from being furhter pursued
                     // so that the numbers of possible buildpathes dont get out of hand
                     if (days == (maxDays - barrierer0) && game.points <= pointsBarrierer0)

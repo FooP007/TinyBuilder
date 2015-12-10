@@ -3,6 +3,8 @@ using System.Collections;
 
 public class CycleTrack : Project 
 {
+    public static string staticProjectName = "Cycletrack";
+
     public static int[] extraPointsList = new int[5] {2,4,8,14,22};
     //public Whitehouse whitehouse;
 
@@ -16,8 +18,8 @@ public class CycleTrack : Project
 	{
 		project = GameObject.FindGameObjectWithTag("CycleTrack");
         dependence = GameObject.Find("PlaceholderWhitehouse").GetComponent<Whitehouse>();
-        projectName = "Cylcetrack";
-
+        projectName = staticProjectName;
+        
         clockText.text = "0";
 
         costs = new int[5] { 15, 20, 30, 45, 65 };

@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Houses : Project 
 {
+    public static string staticProjectName = "Houses";
 
     public static int[] Costs = new int[10] { 10, 15, 20, 25, 30, 35, 40, 45, 50, 55 };
     public static int[] Capacities = new int[10] { 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
@@ -16,7 +17,7 @@ public class Houses : Project
 		project = GameObject.FindGameObjectWithTag("Houses");
         dependence = GameObject.Find("PlaceholderWhitehouse").GetComponent<Whitehouse>();
 
-        projectName = "Houses";
+        projectName = staticProjectName;
         offset = -1.2f;
         upgradeWindowResource = "UpgradeWindowMirror";
         clockText.text = "0";
