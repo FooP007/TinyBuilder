@@ -31,7 +31,7 @@ public class Project : MonoBehaviour
     protected int[] requiredPoints;
     protected int[] requiredWhitehouse;
 
-    protected void StartConstructing()
+    public void StartConstructing()
 	{
         _constructionDays = Rounds();
 		if(_constructionDays >= 0)
@@ -47,7 +47,6 @@ public class Project : MonoBehaviour
 
     private void Update()
     {
-        
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         Debug.DrawRay(Camera.main.transform.position, Input.mousePosition);
@@ -213,21 +212,19 @@ public class Project : MonoBehaviour
 		}
 	}
 
-	public void TryConstructing()
+	private void TryConstructing()
 	{
 		if(Game.overseer.CanBuyProject(this, constructing))
 		{
             BuyProject();
         }
-        
 	}
 
     public void BuyProject()
     {
-        Game.overseer.coins -= (Cost() - Game.overseer.discount);
+        Game.overseer.coins -= Overseer.ActualCost(Cost(), Game.overseer.discount);
         StartConstructing();
         CloseUpgradeWindow();
-        //Debug.Log("bought: " + projectName);
     }
 
 	protected void OnMouseDown()
@@ -265,10 +262,10 @@ public class Project : MonoBehaviour
     {
         get { return _constructionDays; }
         set { _constructionDays = value;
-              if (_constructionDays < 0)
-              {
-                _constructionDays = 0;
-              }
+                if (_constructionDays < 0)
+                {
+                    _constructionDays = 0;
+                }
             }
     }
 
@@ -355,7 +352,7 @@ public class Project : MonoBehaviour
 		}
 		else
 		{
-			//Debug.Log ("Error! Index is out of range. Array: " + array.ToString());
+			// Debug.Log ("Error! Index is out of range. Array: " + array.ToString());
 			return outOfRange;
 		}
 	}
@@ -366,7 +363,6 @@ public class Project : MonoBehaviour
 	 */
 	public void FillSpriteRenderer()
 	{
-        
         SpriteRenderer appearence = project.GetComponent<SpriteRenderer>();
         if(appearence != null)
         {
@@ -383,7 +379,6 @@ public class Project : MonoBehaviour
                 //Debug.Log ("The given level was not in the expected range. Range :1 - " + projectSprites.Length +" but projectLevel was " + projectLevel + " project: " + project.name);
             }
         }
-		
 
         // placeholder
         if (projectLevel >= 0 && projectLevel < placeholderSprites.Length)
@@ -394,8 +389,5 @@ public class Project : MonoBehaviour
 		{
 			//Debug.Log ("The given level was not in the expected range. Range :0 - " + placeholderSprites.Length +" but projectLevel was " + projectLevel);
 		}
-		
-       
-		
 	}
 }

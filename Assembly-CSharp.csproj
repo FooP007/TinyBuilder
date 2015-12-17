@@ -45,8 +45,6 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\AUnitTest\Timer.cs" />
-     <Compile Include="Assets\Scripts\AUnitTest\UnitTest.cs" />
      <Compile Include="Assets\Scripts\Day.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
      <Compile Include="Assets\Scripts\GameStats.cs" />
@@ -71,6 +69,9 @@
      <Compile Include="Assets\Scripts\Projects\Whitehouse.cs" />
      <Compile Include="Assets\Scripts\UI\SetSortingLayer.cs" />
      <Compile Include="Assets\Scripts\UI\UpgradeWindow.cs" />
+     <Compile Include="Assets\Scripts\UnitTest\DynamicVariation.cs" />
+     <Compile Include="Assets\Scripts\UnitTest\Overseer_Test.cs" />
+     <Compile Include="Assets\Scripts\UnitTest\Project_Test.cs" />
      <None Include="Assets\Links.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

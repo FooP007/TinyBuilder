@@ -1,55 +1,56 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+
 public class Overseer : MonoBehaviour
 {
     private GameObject upgradeWindow;
 
-	private static Overseer instance = null;
+    private static Overseer instance = null;
 
-	private TextMesh coinText;
-	private TextMesh pointText;
-	private TextMesh environmentText;
-	private TextMesh capacityText;
-	private TextMesh citizenText;
-	private TextMesh dayText;
+    private TextMesh coinText;
+    private TextMesh pointText;
+    private TextMesh environmentText;
+    private TextMesh capacityText;
+    private TextMesh citizenText;
+    private TextMesh dayText;
 
-	private int _coins;
-	private int _points;
-	private int _citizen;
-	private int _capacity;
-	private int _environmentPoints;
-	private int _day;
+    private int _coins;
+    private int _points;
+    private int _citizen;
+    private int _capacity;
+    private int _environmentPoints;
+    private int _day;
     private int _discount;
     private int _builder;
 
-    private int _maxBuilder; 
+    private int _maxBuilder;
 
     private Overseer()
-	{
-		coinText        = GameObject.FindGameObjectWithTag("Coin").GetComponent<TextMesh>();
-		pointText       = GameObject.FindGameObjectWithTag("Point").GetComponent<TextMesh>();
-		environmentText = GameObject.FindGameObjectWithTag("Environment").GetComponent<TextMesh>();
-		capacityText    = GameObject.FindGameObjectWithTag("Capacity").GetComponent<TextMesh>();
-		citizenText     = GameObject.FindGameObjectWithTag("Citizen").GetComponent<TextMesh>();
-		dayText         = GameObject.FindGameObjectWithTag("Day").GetComponent<TextMesh>();
-	}
-
-	public static Overseer Instance
-	{
-		get
-		{
-			if (instance == null)
-			{
-				instance = new Overseer();
-			}
-			return instance;
-		}
-	}
-    
-    public bool Solvent(Project project)
     {
-        if (coins >= (project.Cost() - discount))
+        coinText = GameObject.FindGameObjectWithTag("Coin").GetComponent<TextMesh>();
+        pointText = GameObject.FindGameObjectWithTag("Point").GetComponent<TextMesh>();
+        environmentText = GameObject.FindGameObjectWithTag("Environment").GetComponent<TextMesh>();
+        capacityText = GameObject.FindGameObjectWithTag("Capacity").GetComponent<TextMesh>();
+        citizenText = GameObject.FindGameObjectWithTag("Citizen").GetComponent<TextMesh>();
+        dayText = GameObject.FindGameObjectWithTag("Day").GetComponent<TextMesh>();
+    }
+
+    public static Overseer Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new Overseer();
+            }
+            return instance;
+        }
+    }
+
+    public static bool Solvent(Project project, int coins, int curDiscount)
+    {
+        if (coins >= ActualCost(project.Cost(), curDiscount))
         {
             return true;
         }
@@ -61,14 +62,14 @@ public class Overseer : MonoBehaviour
     }
 
     public bool CanBuyProject(Project project, bool constructing)
-	{
-        if(project.Rounds() != Project.outOfRange)
+    {
+        if (project.Rounds() != Project.outOfRange)
         {
             if (!constructing)
             {
                 if (project.MetRequirements())
                 {
-                    if (Solvent(project))
+                    if (Solvent(project, coins, discount))
                     {
                         return true;
                     }
@@ -81,7 +82,6 @@ public class Overseer : MonoBehaviour
                 {
                     return false;
                 }
-
             }
             else
             {
@@ -117,15 +117,30 @@ public class Overseer : MonoBehaviour
     }
 
     public void Income()
-	{
-		if(capacity >= citizen)
-		{
-			points += citizen;
-		}
+    {
+        if (capacity >= citizen)
+        {
+            points += citizen;
+        }
 
-		points += environmentPoints;
-		coins += citizen;
-	}
+        points += environmentPoints;
+        coins += citizen;
+    }
+
+    public static int ActualCost(int price, int curDiscount)
+    {
+        if(curDiscount < 0)
+        {
+            curDiscount = 0;
+        }
+       
+        if (curDiscount >= price || price < 0)
+        {
+            return 0;
+        }
+
+        return (price - curDiscount);
+    }
 
     public int discount
     {
@@ -133,8 +148,8 @@ public class Overseer : MonoBehaviour
         set { _discount = value; }
     }
     /**
-     * The amount of builder indicates how many time 
-     * the player can reduce the building rounds of one of the buildings
+        * The amount of builder indicates how many time 
+        * the player can reduce the building rounds of one of the buildings
     */
     public int builder
     {
@@ -149,60 +164,64 @@ public class Overseer : MonoBehaviour
     }
 
     public int day
-	{
-		get { return _day; }
-		set { 
-			_day = value;
+    {
+        get { return _day; }
+        set
+        {
+            _day = value;
             dayText.text = "Day: " + value.ToString();
-                
-		}
-	}
-	
-	public int coins
-	{
-		get { return _coins; }
-		set { 
-				_coins = value; 
-				coinText.text = value.ToString();
-                Game.UpdateUpgradeWindows();
-			}
-	}
+        }
+    }
 
-	public int environmentPoints
-	{
-		get { return _environmentPoints; }
-		set { 
-				_environmentPoints = value;
-				environmentText.text = value.ToString() + " Enviroment points";
-			}
-	}
+    public int coins
+    {
+        get { return _coins; }
+        set
+        {
+            _coins = value;
+            coinText.text = value.ToString();
+            Game.UpdateUpgradeWindows();
+        }
+    }
 
-	public int points
-	{
-		get { return _points; }
-		set { 
-				_points = value;
-				pointText.text = value.ToString();
-			}
-	}
+    public int environmentPoints
+    {
+        get { return _environmentPoints; }
+        set
+        {
+            _environmentPoints = value;
+            environmentText.text = value.ToString() + " Enviroment points";
+        }
+    }
 
-	public int citizen
-	{
-		get { return _citizen; }
-		set { 
-				_citizen = value;
-			    citizenText.text = value.ToString()+ " Citizen";               
-            }
-	}
+    public int points
+    {
+        get { return _points; }
+        set
+        {
+            _points = value;
+            pointText.text = value.ToString();
+        }
+    }
 
-	public int capacity
-	{
-		get { return _capacity; }
-		set { 
-				_capacity = value;
-			    capacityText.text = value.ToString()+ " Capacity";
-            }
-	}
+    public int citizen
+    {
+        get { return _citizen; }
+        set
+        {
+            _citizen = value;
+            citizenText.text = value.ToString() + " Citizen";
+        }
+    }
 
-
+    public int capacity
+    {
+        get { return _capacity; }
+        set
+        {
+            _capacity = value;
+            capacityText.text = value.ToString() + " Capacity";
+        }
+    }
 }
+

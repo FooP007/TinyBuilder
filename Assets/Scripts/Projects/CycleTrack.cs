@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿ using UnityEngine;
 using System.Collections;
 
 public class CycleTrack : Project 
@@ -30,7 +30,7 @@ public class CycleTrack : Project
 	
 	void Start()
 	{
-        UpdateText(projectLevel, new string[2] { " capacity", " envir pts" }, new int[2][] { capacities, extraPointsList }, "Street level: ", requiredWhitehouse);
+        UpdateText(projectLevel, new string[2] { " capacity", " envir pts" }, new int[2][] { capacities, extraPointsList }, "Whitehouse level: ", requiredWhitehouse);
     }
 	
 	protected override void Upgrade()
@@ -38,7 +38,7 @@ public class CycleTrack : Project
 		Game.overseer.capacity += Capacity();
 		Game.overseer.environmentPoints += extraPointsList[projectLevel];
 
-        UpdateText(projectLevel + 1, new string[2] { " capacity", " envir pts" }, new int[2][] { capacities, extraPointsList }, "Street level: ", requiredWhitehouse);
+        UpdateText(projectLevel + 1, new string[2] { " capacity", " envir pts" }, new int[2][] { capacities, extraPointsList }, "Whitehouse level: ", requiredWhitehouse);
     }
 	
 	public override bool MetRequirements()

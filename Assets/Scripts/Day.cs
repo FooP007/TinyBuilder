@@ -31,6 +31,4 @@ public class Day
     public int builder { get; set; }
 
     public Dictionary<string, int> constructProjects { get; set; }
-
-    public GameStats dayStats { get; set; }
 }

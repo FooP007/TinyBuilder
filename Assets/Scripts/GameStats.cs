@@ -105,7 +105,6 @@ public class GameStats
 
         train = new BaseProject(Train.Costs, Train.Capacities, Train.BuildingRounds, Train.RequiredPoints, Train.RequiredWhitehouse, "Train", this, BaseProject.capacityProject, new BaseProject[] { whitehouse, station }, new int[] {2 });
         baseProjects.Add(train);
-
     }
 
     private bool Solvent(BaseProject baseProject)
@@ -116,23 +115,17 @@ public class GameStats
         }
         else
         {
-            //Debug.Log("Not enough coins! Your coins: " + coins + ". Coins needed: " + baseProject.Cost());
             return false;
         }
     }
 
     private void UseBuilder()
     {
-        
-        if (builder > 0)
+        if(builder > 0)
         {
-            foreach (BaseProject bp in baseProjects)
+            foreach(BaseProject bp in baseProjects)
             {
-                if(builder <= 0)
-                {
-                    break;
-                }
-                else
+                if(builder > 0)
                 {
                     if (bp.constructing)
                     {
@@ -215,7 +208,7 @@ public class GameStats
         {
             points += citizen;
         }
-        //Debug.Log("environmentPoints: "+environmentPoints);
+        
         points += environmentPoints;
         coins += citizen;
     }

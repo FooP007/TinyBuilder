@@ -43,7 +43,7 @@ public class UpgradeWindow : MonoBehaviour
             effectText.text = "Effect: \n" + _project.effectText;
             requirementText.text = "Requires: \n" + _project.requireText;
 
-            if (!Game.overseer.Solvent(_project) && !maximumUpgrade)
+            if (!Overseer.Solvent(_project, Game.overseer.coins, Game.overseer.discount) && !maximumUpgrade)
             {
                 SpriteRenderer upgradeButtonRenderer = upgradeButton.GetComponent<SpriteRenderer>();
                 upgradeButtonRenderer.color = Color.red;
@@ -65,7 +65,7 @@ public class UpgradeWindow : MonoBehaviour
                 requirementText.color = Color.black;
             }
 
-            if(Game.overseer.Solvent(_project)  && _project.MetRequirements() || maximumUpgrade)
+            if(Overseer.Solvent(_project, Game.overseer.coins, Game.overseer.discount)  && _project.MetRequirements() || maximumUpgrade)
             {
                 SpriteRenderer curRemd = upgradeButton.GetComponent<SpriteRenderer>();
                 curRemd.color = Color.white;

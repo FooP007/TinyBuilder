@@ -8,7 +8,8 @@ public class Game : MonoBehaviour
     private int maxDays = 30;
 
     public GameObject UnitTest;
-    private UnitTest unitScript;
+    private DynamicVariation variationscript;
+    private bool debugging;
 
     // Village
     public static List<Project> projects = new List<Project>();
@@ -18,12 +19,15 @@ public class Game : MonoBehaviour
 
     private bool startQueue = false;
     private float queueTime = 0;
-    private int queueInterval = 2;
+    private int queueIndex;
+    private int queueInterval = 1;
 
     // Use this for initialization
     void Awake () 
 	{
-        unitScript = UnitTest.GetComponent<UnitTest>();
+        variationscript = UnitTest.GetComponent<DynamicVariation>();
+        debugging = false;
+        
         overseer = Overseer.Instance;
 
         overseer.coins = 15;
@@ -40,13 +44,23 @@ public class Game : MonoBehaviour
 			Project script = p.GetComponent<Project>();
 			projects.Add(script);
 		}
-
-        buildTown();
+       
     }
 
-    public void StartJobqueue()
+    private void Start()
+    {
+        buildTown();
+
+        if (debugging)
+        {
+            variationscript.SearchForBestBuildpath();
+        }
+    }
+
+    public void StartJobqueue(int index)
     {
         startQueue = true;
+        queueIndex = index;
     }
 
 	public void NextDay()
@@ -57,7 +71,6 @@ public class Game : MonoBehaviour
             UseAllBuilder();
         
             overseer.day++;
-           
             overseer.Income();
             overseer.builder = overseer.maxBuilder;
 
@@ -69,7 +82,7 @@ public class Game : MonoBehaviour
 
         if (overseer.day == maxDays)
         {
-            Debug.Log("GameOver!");
+            Debug.Log("Game Over!");
             GameOver();
         }
     }
@@ -80,14 +93,13 @@ public class Game : MonoBehaviour
         {
             if (p.projectName == targetProject)
             {
-               
                 return p;
             }
         }
         return null;
-    } 
+    }
 
-    void UseAllBuilder()
+    private void UseAllBuilder()
     {
         foreach(Project p in projects)
         {
@@ -132,76 +144,89 @@ public class Game : MonoBehaviour
             }
         }
     }
-	
-	// Update is called once per frame
-	void Update () 
-	{
+
+    private void ProcessQueue()
+    {
         if(startQueue)
         {
-            if (queueTime <= 0 && unitScript.jobqueue.Count > 0 || Input.GetKeyDown("space"))
+            if(queueTime <= 0)
             {
-                queueTime = queueInterval;
-               
-                string targetString = unitScript.jobqueue.Dequeue();
-                Debug.Log("targetString: "+ targetString);
-                Project targetProject = GetProjectByString(targetString);
-                if(targetProject != null)
+                if (variationscript.jobqueue.Count > 0)
                 {
-                    targetProject.BuyProject();
-                }
+                    queueTime = queueInterval;
 
-                GameObject[] allBuilder = GameObject.FindGameObjectsWithTag("Builder");
+                    string targetString = variationscript.jobqueue.Dequeue();
 
-                //UseAllBuilder();
+                    Project targetProject = GetProjectByString(targetString);
+                    if (targetProject != null)
+                    {
+                        targetProject.BuyProject();
+                    }
 
-                if (allBuilder.Length == 0)
-                {
-                    NextDay();
+                    GameObject[] allBuilder = GameObject.FindGameObjectsWithTag("Builder");
+
+
+                    if (allBuilder.Length == 0)
+                    {
+                        NextDay();
+                    }
+                    else
+                    {
+                        Debug.Log("Error! something went wrong.");
+                    }
+                    /*
+                    Debug.Log("anzahl info: "+ variationscript.dayInfo.Count+ " index: "+ queueIndex);
+
+                    LinkedListNode<Day> dayNode = variationscript.FindDay((variationscript.maxDays - overseer.day), variationscript.dayInfo[queueIndex]);
+
+                    Debug.Log("Day: " + overseer.day + " points: " + overseer.points+" || " + dayNode.Value.points);
+                    */
                 }
                 else
                 {
-                    Debug.Log("allBuilder: "+allBuilder.Length);
+                    if (overseer.points == variationscript._allPoints[queueIndex])
+                    {
+                        Debug.Log("Test successful");
+                    }
+                    startQueue = false;
                 }
-
-               
-                if (targetProject != null)
-                {
-                    int startCoins = overseer.coins + targetProject.Cost() - overseer.citizen;
-                    int spend = targetProject.Cost();
-                    int afterSpendCoins = overseer.coins - overseer.citizen;
-
-                    Debug.Log("Day:" + overseer.day + " project: " + targetString + " start coins: " + startCoins + " discount: " + overseer.discount +
-                        " spend: " + spend + " Coins after project: " + afterSpendCoins + " Income: "+ overseer.citizen  + " new coins: " + overseer.coins);
-                }
-                else
-                {
-                    int startCoins = overseer.coins - overseer.citizen;
-                    int spend = 0;
-                    int afterSpendCoins = overseer.coins - overseer.citizen;
-                    Debug.Log("Day:" + overseer.day + " project: " + targetString + " start coins: " + startCoins + " discount: " + overseer.discount +
-                        " spend: " + spend + " Coins after project: " + afterSpendCoins + " Income: " + overseer.citizen + " new coins: " + overseer.coins);
-                }
-                
             }
-            else if(unitScript.jobqueue.Count <= 0)
-            {
-                Debug.Log("startQueue");
-                startQueue = false;
-            }
-
             queueTime -= 1 * Time.deltaTime;
         }
+    }
+
+    private void BuildRandomeBuildpath()
+    {
+        GameReset();
+        queueIndex = variationscript.GenerateNewBuildqueue();
+        queueTime = 0;
+        startQueue = true;
+    }
+
+    // Update is called once per frame
+    void Update () 
+	{
+        ProcessQueue();
 
         if (Input.GetKeyDown("space"))
 		{
 			spaceKeyDown = true;
-            //Debug.Log("pressed");
-            GameObject[] allBuilder = GameObject.FindGameObjectsWithTag("Builder");
-            if (allBuilder.Length == 0)
+            if(debugging)
             {
-                NextDay();
+                if (!startQueue)
+                {
+                    BuildRandomeBuildpath();
+                }
             }
-		}
+            else
+            {
+                GameObject[] allBuilder = GameObject.FindGameObjectsWithTag("Builder");
+                if (allBuilder.Length == 0)
+                {
+                    NextDay();
+                }
+            }
+        }
 
 		if(Input.GetKeyUp("space"))
 		{
@@ -209,7 +234,7 @@ public class Game : MonoBehaviour
 		}
     }
 
-	void buildTown()
+	private void buildTown()
 	{
 		foreach (Project p in projects)
 		{
@@ -222,7 +247,7 @@ public class Game : MonoBehaviour
     {
         gameOver = true;
         overseer.day++;
-        //Debug.Log("Game over was called!!");
+        // Debug.Log("Game over was called!!");
     }
 
     public void GameReset()

@@ -27,8 +27,6 @@ public class BaseProject
     public static string capacityProject = "capacityProject";
     private string projectType = "";
 
-    public int allBuilder = 0;
-
     public BaseProject(int[] costs, int[] capacities, int[] buildingRounds, int[] requiredPoints, int[] requiredWhitehouse,
         string projectName, GameStats stats, string pType, BaseProject[] dependence = null, int[] extraPointsList = null, int[] discounts = null, int[] builder = null, int newProjectLevel = 0)
     {
@@ -79,7 +77,7 @@ public class BaseProject
 
     public void UseBuilder()
     {
-        allBuilder--;
+        gameStats.builder--;
         Construct();
     }
 
@@ -95,7 +93,7 @@ public class BaseProject
                 projectLevel++;
                 
                 // remove all builder
-                allBuilder = 0;
+                //allBuilder = 0;
                
                 _constructionDays = 0;
                 _constructing = false;
@@ -202,10 +200,10 @@ public class BaseProject
         //Debug.Log("bought: " + projectName);
     }
 
-    public void AddBuilder(int count)
+    /*public void AddBuilder(int count)
     {
         allBuilder += count;
-    }
+    }*/
 
     public int constructionDays
     {
